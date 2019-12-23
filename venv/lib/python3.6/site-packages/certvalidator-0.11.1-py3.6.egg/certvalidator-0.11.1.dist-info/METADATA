@@ -1,0 +1,27 @@
+Metadata-Version: 2.0
+Name: certvalidator
+Version: 0.11.1
+Summary: Validates X.509 certificates and paths
+Home-page: https://github.com/wbond/certvalidator
+Author: wbond
+Author-email: will@wbond.net
+License: MIT
+Keywords: crypto pki x509 certificate crl ocsp
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.2
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Security :: Cryptography
+Requires-Dist: asn1crypto (>=0.18.1)
+Requires-Dist: oscrypto (>=0.16.1)
+
+Docs for this project are maintained at https://github.com/wbond/certvalidator#readme.
+
+

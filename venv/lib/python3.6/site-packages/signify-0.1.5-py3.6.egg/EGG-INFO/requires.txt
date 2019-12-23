@@ -1,0 +1,4 @@
+pyasn1>=0.4.0
+certvalidator>=0.11
+asn1crypto
+oscrypto
