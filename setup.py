@@ -10,7 +10,7 @@ setup(
     },
     author='qux-bbb',
     description='Analyzer for files and urls',
-    long_description=open('README.md', 'r').read(),
+    long_description=open('README.md', 'r', encoding='utf8').read(),
     entry_points={
         'console_scripts': [
             'x_analyzer = x_analyzer.main:main',

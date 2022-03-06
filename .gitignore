@@ -1,4 +1,8 @@
 *.pyc
+*.log
 .vscode
 .idea
 venv
+build
+dist
+x_analyzer.egg-info
