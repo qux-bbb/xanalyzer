@@ -3,9 +3,8 @@
 
 import argparse
 
-from x_analyzer.config import Config
 from x_analyzer.file import FileAnalyzer
-from x_analyzer.utils import log
+from x_analyzer.utils import log, init_log
 
 
 def main():
@@ -17,15 +16,15 @@ def main():
     group.add_argument('-u', '--url')
     args = parser.parse_args()
     
-    Config.set_log_file_path()
+    init_log()
     
     if args.file:
         for file_path in args.file:
-            log('processing {}'.format(file_path))
+            log.info('processing {}'.format(file_path))
             file_analyzer = FileAnalyzer(file_path)
             file_analyzer.run()
     if args.url:
-        log('processing {}'.format(args.url))
+        log.info('processing {}'.format(args.url))
         # TODO 增加url的处理方式, 集成 WebSiteLinkScanner 和 PageFinder
         pass
 

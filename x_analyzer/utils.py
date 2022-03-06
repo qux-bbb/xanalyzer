@@ -1,54 +1,26 @@
 # coding:utf8
 
-import os
 import sys
-
-from x_analyzer.config import Config
-
-
-def color(text, color_code):
-    if sys.platform == 'win32' and os.getenv('TERM') != 'xterm':
-        return text
-    return '\x1b[{}m{}\x1b[0m'.format(color_code, text)
+import time
+import logging
 
 
-def red(text):
-    return color(text, 31)
+log = logging.getLogger('x_analyzer')
 
 
-def green(text):
-    return color(text, 32)
+def init_log():
+    # 指定logger输出格式 -8s: 指定宽度为8，减号表示左对齐
+    formatter = logging.Formatter('%(asctime)s %(levelname)-8s: %(message)s')
 
+    cur_time = time.strftime('%Y%m%d_%H%M%S')
+    # 文件日志
+    file_handler = logging.FileHandler(f'x_analyzer_{cur_time}.log')
+    file_handler.setFormatter(formatter)  # 可以通过setFormatter指定输出格式
+    # 控制台日志
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(formatter)
 
-def yellow(text):
-    return color(text, 33)
-
-
-def blue(text):
-    return color(text, 34)
-
-
-def bold(text):
-    return color(text, 1)
-
-
-def log_red(text):
-    """
-    重要日志
-    """
-    log_file = open(Config.log_file_path, 'a')
-    message = '[!] {}'.format(text)
-    print(red(message))
-    log_file.write('{}\n'.format(message))
-    log_file.close()
-
-
-def log(text):
-    """
-    普通日志
-    """
-    log_file = open(Config.log_file_path, 'a')
-    message = '[*] {}'.format(text)
-    print(message)
-    log_file.write('{}\n'.format(message))
-    log_file.close()
+    log.addHandler(file_handler)
+    log.addHandler(console_handler)
+    # 指定日志的最低输出级别，默认为WARNING级别
+    log.setLevel(logging.INFO)

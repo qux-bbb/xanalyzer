@@ -7,7 +7,7 @@ import peutils
 from signify.signed_pe import SignedPEFile
 
 from x_analyzer.config import Config
-from x_analyzer.utils import log, log_red
+from x_analyzer.utils import log
 
 
 class PeAnalyzer:
@@ -23,7 +23,7 @@ class PeAnalyzer:
         获取编译时间
         """
         time_str = datetime.fromtimestamp(self.pe_file.FILE_HEADER.TimeDateStamp)
-        log('compile time: {}'.format(time_str))
+        log.info('compile time: {}'.format(time_str))
 
     def pdb_scan(self):
         """
@@ -31,7 +31,7 @@ class PeAnalyzer:
         """
         for debug_entry in getattr(self.pe_file, 'DIRECTORY_ENTRY_DEBUG', []):
             if hasattr(debug_entry.entry, 'PdbFileName'):
-                log_red('pdb path: {}'.format(debug_entry.entry.PdbFileName.decode('utf8')))
+                log.info('pdb path: {}'.format(debug_entry.entry.PdbFileName.decode('utf8')))
                 return
 
     def peid_scan(self):
@@ -41,7 +41,7 @@ class PeAnalyzer:
         signatures = peutils.SignatureDatabase(Config.peid_signature_path)
         matches = signatures.match(self.pe_file, ep_only=True)
         if matches:
-            log_red(matches)
+            log.info(matches)
 
     def signature_scan(self):
         """
@@ -59,7 +59,7 @@ class PeAnalyzer:
                 for signed_data in pe.signed_datas:
                     cert = signed_data.certificates[0]
                     log('Included certificates:')
-                    log_red(' Subject: {}'.format(cert.subject_dn))
+                    log.info(' Subject: {}'.format(cert.subject_dn))
                     log(' Issuer: {}'.format(cert.issuer_dn))
                     log(' Serial: {}'.format(cert.serial_number))
                     log(' Valid from: {}'.format(cert.valid_from))
@@ -67,13 +67,13 @@ class PeAnalyzer:
 
                     try:
                         signed_data.verify()
-                        log_red('Signature: valid')
+                        log.info('Signature: valid')
                     except Exception as e:
-                        log_red('Signature: invalid')
-                        log_red('{}'.format(e))
+                        log.warning('Signature: invalid')
+                        log.warning('{}'.format(e))
             except Exception as e:
-                log_red('Error while parsing:')
-                log_red('{}'.format(e))
+                log.error('Error while parsing:')
+                log.error('{}'.format(e))
 
     def run(self):
         self.compile_time_scan()
@@ -83,4 +83,3 @@ class PeAnalyzer:
         self.signature_scan()
         
         self.peid_scan()
-        

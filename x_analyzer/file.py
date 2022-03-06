@@ -2,7 +2,7 @@
 
 import magic
 
-from x_analyzer.utils import log, log_red
+from x_analyzer.utils import log
 from x_analyzer.file_process.pe import PeAnalyzer
 
 
@@ -22,7 +22,7 @@ class FileAnalyzer():
         pass
 
     def run(self):
-        log('file type: {}'.format(self.file_type))
+        log.info('file type: {}'.format(self.file_type))
         if self.file_type.startswith('PE'):
             pe_analyzer = PeAnalyzer(self.file_path)
             pe_analyzer.run()
