@@ -5,7 +5,7 @@ import time
 import logging
 
 
-log = logging.getLogger('x_analyzer')
+log = logging.getLogger('xanalyzer')
 
 
 def init_log():
@@ -14,7 +14,7 @@ def init_log():
 
     cur_time = time.strftime('%Y%m%d_%H%M%S')
     # 文件日志
-    file_handler = logging.FileHandler(f'x_analyzer_{cur_time}.log')
+    file_handler = logging.FileHandler(f'xanalyzer_{cur_time}.log')
     file_handler.setFormatter(formatter)  # 可以通过setFormatter指定输出格式
     # 控制台日志
     console_handler = logging.StreamHandler(sys.stdout)

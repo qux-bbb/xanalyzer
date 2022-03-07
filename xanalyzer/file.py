@@ -2,8 +2,8 @@
 
 import magic
 
-from x_analyzer.utils import log
-from x_analyzer.file_process.pe import PeAnalyzer
+from xanalyzer.utils import log
+from xanalyzer.file_process.pe import PeAnalyzer
 
 
 class FileAnalyzer():

@@ -1,4 +1,4 @@
-# x_analyzer
+# xanalyzer
 
 静态分析文件和url，python3下运行。  
 
@@ -15,25 +15,25 @@
 ## 安装
 使用pip安装：  
 ```r
-pip install x-analyzer
+pip install xanalyzer
 ```
 
 从源码安装：  
 ```r
-git clone https://github.com/qux-bbb/x_analyzer
-cd x_analyzer
+git clone https://github.com/qux-bbb/xanalyzer
+cd xanalyzer
 python setup.py install
 ```
 
 ## 使用示例
 ```r
-x_analyzer -f hello.exe
+xanalyzer -f hello.exe
 ```
     
 # 开发
 ```r
-git clone https://github.com/qux-bbb/x_analyzer
-cd x_analyzer
+git clone https://github.com/qux-bbb/xanalyzer
+cd xanalyzer
 virtualenv venv
 pip install -r requirements.txt
 python setup.py develop

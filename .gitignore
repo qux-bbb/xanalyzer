@@ -5,4 +5,4 @@
 venv
 build
 dist
-x_analyzer.egg-info
+xanalyzer.egg-info

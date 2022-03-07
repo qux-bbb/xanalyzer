@@ -3,13 +3,13 @@
 
 import argparse
 
-from x_analyzer.file import FileAnalyzer
-from x_analyzer.utils import log, init_log
+from xanalyzer.file import FileAnalyzer
+from xanalyzer.utils import log, init_log
 
 
 def main():
     parser = argparse.ArgumentParser(
-        prog='x_analyzer',
+        prog='xanalyzer',
         description='Process some files and urls.')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-f', '--file', nargs='+')

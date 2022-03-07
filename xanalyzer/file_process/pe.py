@@ -6,8 +6,8 @@ import peutils
 
 from signify.signed_pe import SignedPEFile
 
-from x_analyzer.config import Config
-from x_analyzer.utils import log
+from xanalyzer.config import Config
+from xanalyzer.utils import log
 
 
 class PeAnalyzer:
