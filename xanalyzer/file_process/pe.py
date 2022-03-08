@@ -43,9 +43,9 @@ class PeAnalyzer:
         if matches:
             log.info(matches)
 
-    def signature_scan(self):
+    def cert_scan(self):
         """
-        输出签名并验证
+        输出证书信息并验证
         """
         security_index = pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_SECURITY"]
         if len(self.pe_file.OPTIONAL_HEADER.DATA_DIRECTORY) <= security_index:
@@ -58,12 +58,12 @@ class PeAnalyzer:
                 pe = SignedPEFile(f)
                 for signed_data in pe.signed_datas:
                     cert = signed_data.certificates[0]
-                    log('Included certificates:')
-                    log.info(' Subject: {}'.format(cert.subject_dn))
-                    log(' Issuer: {}'.format(cert.issuer_dn))
-                    log(' Serial: {}'.format(cert.serial_number))
-                    log(' Valid from: {}'.format(cert.valid_from))
-                    log(' Valid to: {}'.format(cert.valid_to))
+                    log.info('Contains certificates:')
+                    log.info('   Subject: {}'.format(cert.subject_dn))
+                    log.info('   Issuer: {}'.format(cert.issuer_dn))
+                    log.info('   Serial: {}'.format(cert.serial_number))
+                    log.info('   Valid from: {}'.format(cert.valid_from))
+                    log.info('   Valid to: {}'.format(cert.valid_to))
 
                     try:
                         signed_data.verify()
@@ -80,6 +80,6 @@ class PeAnalyzer:
 
         self.pdb_scan()
 
-        self.signature_scan()
+        self.cert_scan()
         
         self.peid_scan()
