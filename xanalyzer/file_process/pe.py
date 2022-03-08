@@ -4,7 +4,7 @@ from datetime import datetime
 import pefile
 import peutils
 
-from signify.signed_pe import SignedPEFile
+from signify.authenticode.signed_pe import SignedPEFile
 
 from xanalyzer.config import Config
 from xanalyzer.utils import log
@@ -59,8 +59,8 @@ class PeAnalyzer:
                 for signed_data in pe.signed_datas:
                     cert = signed_data.certificates[0]
                     log.info('Contains certificates:')
-                    log.info('   Subject: {}'.format(cert.subject_dn))
-                    log.info('   Issuer: {}'.format(cert.issuer_dn))
+                    log.info('   Subject: {}'.format(cert.subject.dn))
+                    log.info('   Issuer: {}'.format(cert.issuer.dn))
                     log.info('   Serial: {}'.format(cert.serial_number))
                     log.info('   Valid from: {}'.format(cert.valid_from))
                     log.info('   Valid to: {}'.format(cert.valid_to))
