@@ -14,9 +14,10 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-f', '--file', nargs='+')
     group.add_argument('-u', '--url')
+    parser.add_argument('-s', '--save_log', action='store_true')
     args = parser.parse_args()
     
-    init_log()
+    init_log(args.save_log)
     
     if args.file:
         for file_path in args.file:
