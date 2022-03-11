@@ -68,7 +68,7 @@ class PeAnalyzer:
     def get_pdb_path(self):
         for debug_entry in getattr(self.pe_file, 'DIRECTORY_ENTRY_DEBUG', []):
             if hasattr(debug_entry.entry, 'PdbFileName'):
-                return debug_entry.entry.PdbFileName.decode('utf8')
+                return debug_entry.entry.PdbFileName.strip(b'\x00').decode('utf8')
         return
 
     def get_peid_result(self):
