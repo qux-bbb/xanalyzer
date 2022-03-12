@@ -4,6 +4,7 @@
 import argparse
 
 from xanalyzer.file import FileAnalyzer
+from xanalyzer.url import UrlAnalyzer
 from xanalyzer.utils import log, init_log
 
 
@@ -26,8 +27,9 @@ def main():
             file_analyzer.run()
     if args.url:
         log.info('processing {}'.format(args.url))
+        url_analyzer = UrlAnalyzer(args.url)
+        url_analyzer.run()
         # TODO 增加url的处理方式, 集成 WebSiteLinkScanner 和 PageFinder
-        pass
 
 
 if __name__ == "__main__":
