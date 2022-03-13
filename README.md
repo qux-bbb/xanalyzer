@@ -28,6 +28,7 @@ python setup.py install
 ## 使用示例
 ```r
 xanalyzer -f hello.exe
+xanalyzer -u "https://www.baidu.com/s?wd=hello"
 ```
     
 # 开发

@@ -37,10 +37,6 @@ class UrlAnalyzer:
             log.info(f'url status code: {url_status_code}')
             robots_info = basic_info.get('robots_info', '')
             if robots_info:
-                if Config.conf['save_flag']:
-                    robots_data_path = os.path.join(Config.conf['analyze_data_path'], 'robots.txt')
-                    with open(robots_data_path, 'wb') as f:
-                        f.write(robots_info)
                 robots_info_len = len(robots_info)
                 if robots_info_len == 1:
                     log.info(f'site has robots.txt({len(robots_info)} byte):')
@@ -50,6 +46,11 @@ class UrlAnalyzer:
                     log.info(f'    content: {robots_info}')
                 else:
                     log.info(f'    80 bytes content: {robots_info[:80]}')
+                if Config.conf['save_flag']:
+                    robots_data_path = os.path.join(Config.conf['analyze_data_path'], 'robots.txt')
+                    with open(robots_data_path, 'wb') as f:
+                        f.write(robots_info)
+                    log.info('robots.txt saved')
 
     def run(self):
         self.basic_scan()
