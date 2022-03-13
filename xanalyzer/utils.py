@@ -1,21 +1,23 @@
 # coding:utf8
 
+import os
 import sys
-import time
 import logging
+
+from xanalyzer.config import Config
 
 
 log = logging.getLogger('xanalyzer')
 
 
-def init_log(save_log_flag):
+def init_log():
     # 指定logger输出格式 -8s: 指定宽度为8，减号表示左对齐
     formatter = logging.Formatter('%(asctime)s %(levelname)-8s: %(message)s')
 
-    if save_log_flag:
-        cur_time = time.strftime('%Y%m%d_%H%M%S')
+    if Config.conf['save_flag']:
         # 文件日志
-        file_handler = logging.FileHandler(f'xanalyzer_{cur_time}.log', encoding='utf8')
+        log_path = os.path.join(Config.conf['analyze_path'], 'xanalyzer.log')
+        file_handler = logging.FileHandler(log_path, encoding='utf8')
         file_handler.setFormatter(formatter)  # 可以通过setFormatter指定输出格式
         log.addHandler(file_handler)
     # 控制台日志
