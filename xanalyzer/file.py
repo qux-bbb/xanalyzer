@@ -4,6 +4,7 @@ import os
 import re
 import magic
 from pathlib import Path
+from hashlib import md5
 
 from xanalyzer.utils import log
 from xanalyzer.file_process.pe import PeAnalyzer
@@ -20,6 +21,13 @@ class FileAnalyzer():
     
     def get_type(self):
         return magic.from_file(self.file_path)
+
+    def get_md5(self):
+        the_file = open(self.file_path, 'rb')
+        file_content = the_file.read()
+        the_file.close()
+        md5_value = md5(file_content).hexdigest()
+        return md5_value
 
     def get_strs(self):
         the_file = open(self.file_path, 'rb')
@@ -45,6 +53,7 @@ class FileAnalyzer():
         pass
 
     def run(self):
+        log.info('md5: {}'.format(self.get_md5()))
         log.info('file type: {}'.format(self.file_type))
         self.str_scan()
         if self.file_type.startswith('PE'):
