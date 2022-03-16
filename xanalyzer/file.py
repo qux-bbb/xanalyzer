@@ -12,15 +12,59 @@ from xanalyzer.config import Config
 
 
 class FileAnalyzer():
-    file_type = None
     file_path = None
+    file_size = None
+    file_type = None
 
     def __init__(self, file_path):
         self.file_path = file_path
+        self.file_size = os.path.getsize(self.file_path)
         self.file_type = self.get_type()
-    
+
     def get_type(self):
         return magic.from_file(self.file_path)
+
+    @staticmethod
+    def get_windows_style_file_size(tmp_size):
+        """
+        得到windows风格的文件大小展示
+        参考: https://stackoverflow.com/a/1094933/7164926
+        [0, 1024字节): 直接展示size
+        [1024字节, 1000YB):
+            如果整数位数大于3，则以下一单位计数；
+            如果整数位数为3，保留整数位置，有小数则略去；
+            如果整数位数小于3，以小数展示
+                小数展示规则：整数位数和小数位数加起来共3位显示(不包括小数点)，后面数字略去
+        [1000YB, +): 直接展示size
+        """
+        if tmp_size == 0:
+            return '0 字节'
+
+        bytes_size = ' ({} 字节)'.format(format(tmp_size, ','))
+        if tmp_size < 1024:
+            return f'{tmp_size} 字节{bytes_size}'
+        tmp_formatted_size = 0
+        tmp_unit = ''
+        for unit in ['字节', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
+            if abs(tmp_size) < 1000.0:
+                tmp_formatted_size = tmp_size
+                tmp_unit = unit
+                break
+            tmp_size /= 1024.0
+        else:
+            tmp_formatted_size = tmp_size
+            tmp_unit = 'YB'
+
+        if tmp_unit == 'YB' and tmp_formatted_size >= 1000:
+            return f'{tmp_formatted_size} YB{bytes_size}'
+
+        tmp_formatted_size = str(tmp_formatted_size)
+        if '.' in tmp_formatted_size[:3]:
+            formatted_size = '{:0<4}'.format(tmp_formatted_size[:4])
+        else:
+            formatted_size = tmp_formatted_size[:3]
+
+        return f'{formatted_size} {tmp_unit}{bytes_size}'
 
     def get_md5(self):
         the_file = open(self.file_path, 'rb')
@@ -55,6 +99,9 @@ class FileAnalyzer():
     def run(self):
         log.info('md5: {}'.format(self.get_md5()))
         log.info('file type: {}'.format(self.file_type))
+        log.info('file size: {}'.format(self.file_size))
+        log.info('windows style file type: {}'.format(self.get_windows_style_file_size(self.file_size)))
+
         self.str_scan()
         if self.file_type.startswith('PE'):
             pe_analyzer = PeAnalyzer(self.file_path)
