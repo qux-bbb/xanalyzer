@@ -1,6 +1,8 @@
 # coding:utf8
 
 import os
+import re
+import socket
 import requests
 from urllib.parse import urlparse
 
@@ -12,11 +14,32 @@ class UrlAnalyzer:
     url = None
     parsed_url = None
     main_url = None
+    hostname = None
+    hostname_type = None
+    resolved_ip_list = []
 
     def __init__(self, url):
         self.url = url
         self.parsed_url = urlparse(url)
-        self.main_url = f'{self.parsed_url.scheme}://{self.parsed_url.hostname}'
+        self.hostname = self.parsed_url.hostname
+        self.main_url = f'{self.parsed_url.scheme}://{self.hostname}'
+        hostname_type_match = re.match(
+            r'^(?:(?P<domain>(?:[-a-zA-Z0-9]+\.)+[a-zA-Z]+)|(?P<ipv4>(?:\d{1,3}\.){3}\d{1,3}))$',
+            self.hostname)
+        if hostname_type_match:
+            self.hostname_type = hostname_type_match.lastgroup
+        else:
+            self.hostname_type = 'other'
+        if self.hostname_type == 'domain':
+            self.resolved_ip_list = self.get_ip_list_by_domain(self.hostname)
+
+    @staticmethod
+    def get_ip_list_by_domain(domain):
+        try:
+            _, _, ip_list = socket.gethostbyname_ex(domain)
+        except:
+            ip_list = None
+        return ip_list
 
     def get_basic_info(self):
         basic_info = {}
@@ -31,6 +54,11 @@ class UrlAnalyzer:
         return basic_info
 
     def basic_scan(self):
+        if self.hostname_type == 'domain':
+            if self.resolved_ip_list:
+                log.info(f'resolved_ip_list: {self.resolved_ip_list}')
+            else:
+                log.warning('unable to resolve to ip')
         basic_info = self.get_basic_info()
         url_status_code = basic_info.get('status_code', 0)
         if url_status_code:
