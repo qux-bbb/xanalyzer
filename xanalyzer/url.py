@@ -18,6 +18,8 @@ class UrlAnalyzer:
     hostname_type = None
     resolved_ip_list = []
     links = []
+    basic_domain = None
+    subdomain_list = []
 
     def __init__(self, url):
         self.url = url
@@ -33,6 +35,7 @@ class UrlAnalyzer:
             self.hostname_type = 'other'
         if self.hostname_type == 'domain':
             self.resolved_ip_list = self.get_ip_list_by_domain(self.hostname)
+            self.basic_domain = re.search(r'[-a-zA-Z0-9]+\.[a-zA-Z]+$', self.hostname).group()
 
     @staticmethod
     def get_ip_list_by_domain(domain):
@@ -81,10 +84,14 @@ class UrlAnalyzer:
                         f.write(robots_info)
                     log.info('robots.txt saved')
 
-    def link_scan(self):
+    def link_and_subdomain_scan(self):
         """
-        扫描站点内所有链接，结果太多，暂不启用
+        扫描站点内所有链接和子域名
         """
+        if self.hostname_type == 'domain':
+            log.info('scanning site link and subdomain...')
+        else:
+            log.info('scanning site link...')
         links_file_name = 'url_links.txt'
         if Config.conf['save_flag']:
             links_file_path = os.path.join(Config.conf['analyze_data_path'], links_file_name)
@@ -110,22 +117,40 @@ class UrlAnalyzer:
 
             half_links = re.findall(rb'(?:href|src|action)\s?=\s?"(.*?)"', res.content)
             half_links.extend(re.findall(rb"(?:href|src|action)\s?=\s?\'(.*?)\'", res.content))
+            if self.hostname_type == 'domain':
+                possible_subdomain_list = re.findall(rb'(?:[-a-zA-Z0-9]+\.){2,}[a-zA-Z]+', res.content)
+                for possible_subdomain in possible_subdomain_list:
+                    possible_subdomain = possible_subdomain.decode()
+                    # 百度网址返回内容会匹配到下面开头的内容作为域名，暂不处理
+                    # if possible_subdomain.startswith(('2F', '252F')):
+                    #     log.info(f'test: {link} {possible_subdomain}')
+                    # 排除奇怪的情况
+                    if possible_subdomain.lower().startswith(('u002f', 'u003e')):
+                        possible_subdomain = possible_subdomain[5:]
+                    # 添加
+                    if possible_subdomain.endswith(self.basic_domain) and possible_subdomain not in self.subdomain_list:
+                        self.subdomain_list.append(possible_subdomain)
 
             for half_link in half_links:
                 half_link = half_link.decode()
                 joined_link = urljoin(res.url, half_link)
-
-                if joined_link not in self.links:
-                    self.links.append(joined_link)
+                joined_link_rstrip = joined_link.rstrip('/')
+                if not joined_link_rstrip.startswith('javascript:')\
+                    and joined_link_rstrip not in self.links:
+                    self.links.append(joined_link_rstrip)
                     if Config.conf['save_flag']:
                         with open(links_file_path, 'a') as f:
-                            f.write(f'{link}\n')
+                            f.write(f'{joined_link_rstrip}\n')
                 # 链接在本站下、不是资源链接、不在待请求列表里，则添加到待请求列表
-                if self.hostname in joined_link\
-                        and not joined_link.endswith(ignore_tails)\
-                        and joined_link not in links_to_req:
-                    links_to_req.append(joined_link)
+                if self.hostname in joined_link_rstrip\
+                        and not joined_link_rstrip.endswith(ignore_tails)\
+                        and joined_link_rstrip not in links_to_req:
+                    links_to_req.append(joined_link_rstrip)
+
+        log.info(f'site link num: {len(self.links)}')
+        if self.hostname_type == 'domain' and self.subdomain_list:
+            log.info(f'subdomain_list: {self.subdomain_list}')
 
     def run(self):
         self.basic_scan()
-        # self.link_scan()
+        self.link_and_subdomain_scan()
