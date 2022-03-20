@@ -20,12 +20,12 @@
     - 站内子域名扫描
 
 ## 安装
-使用pip安装：  
+方法1 - 使用pip安装：  
 ```r
 pip install xanalyzer
 ```
 
-从源码安装：  
+方法2 - 从源码安装：  
 ```r
 git clone https://github.com/qux-bbb/xanalyzer
 cd xanalyzer
