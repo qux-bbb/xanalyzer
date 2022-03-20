@@ -14,6 +14,7 @@ setup(
     author='qux-bbb',
     description='Analyzer for files and urls',
     long_description=open('README.md', 'r', encoding='utf8').read(),
+    long_description_content_type='text/markdown',
     entry_points={
         'console_scripts': [
             'xanalyzer = xanalyzer.main:main',
