@@ -23,7 +23,12 @@ class FileAnalyzer():
         self.file_type = self.get_type()
 
     def get_type(self):
-        return magic.from_file(self.file_path)
+        # return magic.from_file(self.file_path)
+        # magic.from_file不能通过中文路径读取文件，暂时使用magic.from_buffer
+        the_file = open(self.file_path, 'rb')
+        the_content = the_file.read()
+        the_file.close()
+        return magic.from_buffer(the_content)
 
     @staticmethod
     def get_windows_style_file_size(tmp_size):
