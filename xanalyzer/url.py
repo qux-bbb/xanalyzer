@@ -118,16 +118,9 @@ class UrlAnalyzer:
             half_links = re.findall(rb'(?:href|src|action)\s?=\s?"(.*?)"', res.content)
             half_links.extend(re.findall(rb"(?:href|src|action)\s?=\s?\'(.*?)\'", res.content))
             if self.hostname_type == 'domain':
-                possible_subdomain_list = re.findall(rb'(?:[-a-zA-Z0-9]+\.){2,}[a-zA-Z]+', res.content)
+                possible_subdomain_list = re.findall(rb'https?://((?:[-a-zA-Z0-9]+\.){2,}[a-zA-Z]+)', res.content)
                 for possible_subdomain in possible_subdomain_list:
                     possible_subdomain = possible_subdomain.decode()
-                    # 百度网址返回内容会匹配到下面开头的内容作为域名，暂不处理
-                    # if possible_subdomain.startswith(('2F', '252F')):
-                    #     log.info(f'test: {link} {possible_subdomain}')
-                    # 排除奇怪的情况
-                    if possible_subdomain.lower().startswith(('u002f', 'u003e')):
-                        possible_subdomain = possible_subdomain[5:]
-                    # 添加
                     if possible_subdomain.endswith(self.basic_domain) and possible_subdomain not in self.subdomain_list:
                         self.subdomain_list.append(possible_subdomain)
 
