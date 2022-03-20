@@ -2,6 +2,7 @@
 
 import os
 import re
+import json
 import magic
 from pathlib import Path
 from hashlib import md5
@@ -80,6 +81,20 @@ class FileAnalyzer():
         all_strs = re.findall(rb'[\x21-\x7e]{4,}', file_content)
         return all_strs
 
+    def get_tool_recommendations(self):
+        with open(Config.tools_info_path, 'r') as f:
+            tools_info = json.load(f)
+        recommended_tool_info_list = []
+        if 'UPX compressed' in self.file_type:
+            recommended_tool_info_list.append(
+                ['UPX', tools_info.get('UPX')]
+            )
+        if 'Mono/.Net assembly' in self.file_type:
+            recommended_tool_info_list.append(
+                ['dnSpy', tools_info.get('dnSpy')]
+            )
+        return recommended_tool_info_list
+
     def str_scan(self):
         all_strs = self.get_strs()
         if all_strs:
@@ -91,6 +106,13 @@ class FileAnalyzer():
                     for a_str in all_strs:
                         f.write(a_str+b'\n')
                 log.info(f'{str_file_name} saved')
+
+    def tool_recommendations_scan(self):
+        recommended_tool_info_list = self.get_tool_recommendations()
+        if recommended_tool_info_list:
+            log.info('recommended tool info:')
+            for recommended_tool_info in recommended_tool_info_list:
+                log.info(f'    {recommended_tool_info[0]}: {recommended_tool_info[1]}')
 
     def search_str(self, want='ctf'):
         # TODO 查找敏感字符串
@@ -106,3 +128,4 @@ class FileAnalyzer():
         if self.file_type.startswith('PE'):
             pe_analyzer = PeAnalyzer(self.file_path)
             pe_analyzer.run()
+        self.tool_recommendations_scan()
