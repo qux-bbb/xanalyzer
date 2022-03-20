@@ -6,6 +6,7 @@ import json
 import magic
 from pathlib import Path
 from hashlib import md5
+from zipfile import ZipFile
 
 from xanalyzer.utils import log
 from xanalyzer.file_process.pe import PeAnalyzer
@@ -28,7 +29,14 @@ class FileAnalyzer():
         the_file = open(self.file_path, 'rb')
         the_content = the_file.read()
         the_file.close()
-        return magic.from_buffer(the_content)
+        the_file_type = magic.from_buffer(the_content)
+        if the_file_type == 'Zip archive data':
+            the_zip = ZipFile(self.file_path)
+            zip_namelist = the_zip.namelist()
+            the_zip.close()
+            if 'AndroidManifest.xml' in zip_namelist:
+                the_file_type = f'{the_file_type}, APK(Android application package)'
+        return the_file_type
 
     @staticmethod
     def get_windows_style_file_size(tmp_size):
@@ -97,6 +105,10 @@ class FileAnalyzer():
         if 'Mono/.Net assembly' in self.file_type:
             recommended_tool_info_list.append(
                 ['dnSpy', tools_info.get('dnSpy')]
+            )
+        if 'APK(Android application package)' in self.file_type:
+            recommended_tool_info_list.append(
+                ['JADX', tools_info.get('JADX')]
             )
         return recommended_tool_info_list
 

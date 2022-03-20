@@ -2,6 +2,7 @@
     "UPX": "https://upx.github.io",
     "IDA": "https://hex-rays.com",
     "Ghidra": "https://ghidra-sre.org",
+    "JADX": "https://github.com/skylot/jadx",
     "Cutter": "https://cutter.re",
     "dnSpy": "https://github.com/dnSpyEx/dnSpy",
     "x64dbg": "https://x64dbg.com"
