@@ -92,10 +92,9 @@ class UrlAnalyzer:
             log.info('scanning site link and subdomain...')
         else:
             log.info('scanning site link...')
-        links_file_name = 'url_links.txt'
-        if Config.conf['save_flag']:
-            links_file_path = os.path.join(Config.conf['analyze_data_path'], links_file_name)
-        ignore_tails = ('.jpg', '.png', '.gif', '.ico', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', 'pptx', '.apk', '.wav', '.zip', '.rar', '.7z')
+        links_file_path = os.path.join(Config.conf['analyze_data_path'], 'url_links.txt')
+        ignore_tails = ('.jpg', '.png', '.gif', '.ico', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', 'pptx',
+                        '.apk', '.wav', '.zip', '.rar', '.7z')
 
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0",
@@ -110,6 +109,7 @@ class UrlAnalyzer:
                 res = requests.get(link, headers=headers)
             except Exception as e:
                 log.error(f'{e.__class__} {link}')
+                continue
 
             # 只处理文本形式的响应
             if 'text/' not in res.headers.get('Content-Type', ''):
@@ -136,7 +136,7 @@ class UrlAnalyzer:
                 joined_link = urljoin(res.url, half_link)
                 joined_link_rstrip = joined_link.rstrip('/')
                 if not joined_link_rstrip.startswith('javascript:')\
-                    and joined_link_rstrip not in self.links:
+                        and joined_link_rstrip not in self.links:
                     self.links.append(joined_link_rstrip)
                     if Config.conf['save_flag']:
                         with open(links_file_path, 'a') as f:
