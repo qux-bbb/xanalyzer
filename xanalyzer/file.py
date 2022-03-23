@@ -21,21 +21,28 @@ class FileAnalyzer():
     def __init__(self, file_path):
         self.file_path = file_path
         self.file_size = os.path.getsize(self.file_path)
-        self.file_type = self.get_type()
+        self.file_type = self.guess_type()
 
-    def get_type(self):
+    def guess_type(self):
         # return magic.from_file(self.file_path)
         # magic.from_file不能通过中文路径读取文件，暂时使用magic.from_buffer
         the_file = open(self.file_path, 'rb')
         the_content = the_file.read()
         the_file.close()
         the_file_type = magic.from_buffer(the_content)
-        if the_file_type == 'Zip archive data':
+        if the_file_type.startswith('Zip archive data'):
             the_zip = ZipFile(self.file_path)
             zip_namelist = the_zip.namelist()
             the_zip.close()
             if 'AndroidManifest.xml' in zip_namelist:
                 the_file_type = f'{the_file_type}, APK(Android application package)'
+            elif '[Content_Types].xml' in zip_namelist:
+                if 'word/document.xml' in zip_namelist:
+                    the_file_type = 'Microsoft Word 2007+'
+                elif 'xl/workbook.xml' in zip_namelist:
+                    the_file_type = 'Microsoft Excel 2007+'
+                elif 'ppt/presentation.xml' in zip_namelist:
+                    the_file_type = 'Microsoft PowerPoint 2007+'
         return the_file_type
 
     @staticmethod
