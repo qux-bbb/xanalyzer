@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # coding:utf8
 
+import os
 import argparse
 
 from xanalyzer.file import FileAnalyzer
@@ -24,9 +25,12 @@ def main():
     
     if args.file:
         for file_path in args.file:
-            log.info('processing {}'.format(file_path))
-            file_analyzer = FileAnalyzer(file_path)
-            file_analyzer.run()
+            if os.path.exists(file_path):
+                log.info('processing {}'.format(file_path))
+                file_analyzer = FileAnalyzer(file_path)
+                file_analyzer.run()
+            else:
+                log.warning('{} does not exist!!!'.format(file_path))
     if args.url:
         log.info('processing {}'.format(args.url))
         url_analyzer = UrlAnalyzer(args.url)
