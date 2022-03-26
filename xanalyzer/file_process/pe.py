@@ -133,6 +133,15 @@ class PeAnalyzer:
             for item in versioninfo:
                 log.info('    "{}": "{}"'.format(item['name'], item['value']))
 
+    def section_name_scan(self):
+        """
+        输出节区名
+        """
+        section_names = []
+        for section in self.pe_file.sections:
+            section_names.append(section.Name.strip(b'\x00'))
+        log.info(f'section names: {section_names}')
+
     def peid_scan(self):
         """
         查壳
@@ -165,4 +174,5 @@ class PeAnalyzer:
         self.pdb_scan()
         self.versioninfo_scan()
         self.cert_scan()
+        self.section_name_scan()
         self.peid_scan()
