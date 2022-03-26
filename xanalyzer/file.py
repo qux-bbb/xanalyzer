@@ -17,25 +17,31 @@ class FileAnalyzer():
     file_path = None
     file_size = None
     file_type = None
+    possible_extension_names = []
 
     def __init__(self, file_path):
         self.file_path = file_path
         self.file_size = os.path.getsize(self.file_path)
-        self.file_type = self.guess_type()
+        self.file_type, self.possible_extension_names = self.guess_type_and_ext()
 
-    def guess_type(self):
-        # return magic.from_file(self.file_path)
-        # magic.from_file不能通过中文路径读取文件，暂时使用magic.from_buffer
+    def guess_type_and_ext(self):
+        """
+        猜测文件类型和扩展名
+        :return: file_type, possible_extension_names
+        """
         the_file = open(self.file_path, 'rb')
         the_content = the_file.read()
         the_file.close()
+        # magic.from_file不能通过中文路径读取文件，暂时使用magic.from_buffer
         the_file_type = magic.from_buffer(the_content)
+        the_ext = []
         if the_file_type.startswith('Zip archive data'):
             the_zip = ZipFile(self.file_path)
             zip_namelist = the_zip.namelist()
             the_zip.close()
             if 'AndroidManifest.xml' in zip_namelist:
                 the_file_type = f'{the_file_type}, APK(Android application package)'
+                the_ext = ['.apk']
             elif '[Content_Types].xml' in zip_namelist:
                 if 'word/document.xml' in zip_namelist:
                     the_file_type = 'Microsoft Word 2007+'
@@ -43,7 +49,17 @@ class FileAnalyzer():
                     the_file_type = 'Microsoft Excel 2007+'
                 elif 'ppt/presentation.xml' in zip_namelist:
                     the_file_type = 'Microsoft PowerPoint 2007+'
-        return the_file_type
+
+        if the_file_type == 'Microsoft Word 2007+':
+            the_ext = ['.docx']
+        elif the_file_type == 'Microsoft Excel 2007+':
+            the_ext = ['.xlsx']
+        elif the_file_type == 'Microsoft PowerPoint 2007+':
+            the_ext = ['.pptx']
+        elif the_file_type.startswith(('ASCII text', 'UTF-8 Unicode text')):
+            the_ext = ['.txt']
+
+        return the_file_type, the_ext
 
     @staticmethod
     def get_windows_style_file_size(tmp_size):
@@ -145,6 +161,7 @@ class FileAnalyzer():
     def run(self):
         log.info('md5: {}'.format(self.get_md5()))
         log.info('file type: {}'.format(self.file_type))
+        log.info('possible extension names: {}'.format(self.possible_extension_names))
         log.info('file size: {}'.format(self.file_size))
         log.info('windows style file type: {}'.format(self.get_windows_style_file_size(self.file_size)))
 
