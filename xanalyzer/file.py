@@ -125,13 +125,32 @@ class FileAnalyzer():
             recommended_tool_info_list.append(
                 ['UPX', tools_info.get('UPX')]
             )
-        if 'Mono/.Net assembly' in self.file_type:
+        elif 'Mono/.Net assembly' in self.file_type:
             recommended_tool_info_list.append(
                 ['dnSpy', tools_info.get('dnSpy')]
             )
-        if 'APK(Android application package)' in self.file_type:
+        elif 'APK(Android application package)' in self.file_type:
             recommended_tool_info_list.append(
                 ['JADX', tools_info.get('JADX')]
+            )
+        elif 'Name of Creating Application: WPS' in self.file_type:
+            recommended_tool_info_list.append(
+                ['WPS Office', tools_info.get('WPS Office')]
+            )
+        elif 'Microsoft Word 2007+' == self.file_type \
+                or 'Name of Creating Application: Microsoft Office Word' in self.file_type:
+            recommended_tool_info_list.append(
+                ['Microsoft Office Word', tools_info.get('Microsoft Office')]
+            )
+        elif 'Microsoft Excel 2007+' == self.file_type \
+                or 'Name of Creating Application: Microsoft Office Excel' in self.file_type:
+            recommended_tool_info_list.append(
+                ['Microsoft Office Excel', tools_info.get('Microsoft Office')]
+            )
+        elif 'Microsoft PowerPoint 2007+' == self.file_type \
+                or 'Name of Creating Application: Microsoft Office PowerPoint' in self.file_type:
+            recommended_tool_info_list.append(
+                ['Microsoft Office PowerPoint', tools_info.get('Microsoft Office')]
             )
         return recommended_tool_info_list
 
