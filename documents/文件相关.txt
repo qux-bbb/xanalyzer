@@ -1,0 +1,11 @@
+基本的文件分析功能：识别文件类型，给出可能的文件扩展名，建议的工具
+需要支持的常见文件类型：
+    可执行文件:
+        windows: exe/dll/sys(64和32)
+        linux: elf(64和32)
+        android: apk(虽然不是可执行文件)
+    文档文件: pdf/doc/xls/ppt/docx/xlsx/pptx/wps/et/dps
+    压缩包文件: zip/7z/rar/tar.gz
+    图片文件: png/jpg/bmp/gif
+    音频文件: mp3
+    视频文件: mp4/flv/avi

@@ -41,7 +41,6 @@ class FileAnalyzer():
             the_zip.close()
             if 'AndroidManifest.xml' in zip_namelist:
                 the_file_type = f'{the_file_type}, APK(Android application package)'
-                the_ext = ['.apk']
             elif '[Content_Types].xml' in zip_namelist:
                 if 'word/document.xml' in zip_namelist:
                     the_file_type = 'Microsoft Word 2007+'
@@ -50,12 +49,64 @@ class FileAnalyzer():
                 elif 'ppt/presentation.xml' in zip_namelist:
                     the_file_type = 'Microsoft PowerPoint 2007+'
 
-        if the_file_type == 'Microsoft Word 2007+':
+        if the_file_type.startswith('Composite Document File V2 Document'):
+            if 'WordDocument'.encode('utf16')[2:] in the_content:
+                if 'Name of Creating Application: WPS' in the_file_type:
+                    the_ext = ['.doc', '.wps']
+                else:
+                    the_ext = ['.doc']
+            elif 'Workbook'.encode('utf16')[2:] in the_content:
+                if 'Name of Creating Application: WPS' in the_file_type:
+                    the_ext = ['.xls', '.et']
+                else:
+                    the_ext = ['.xls']
+            elif 'PowerPoint Document'.encode('utf16')[2:] in the_content:
+                if 'Name of Creating Application: WPS' in the_file_type:
+                    the_ext = ['.ppt', '.dps']
+                else:
+                    the_ext = ['.ppt']
+
+        if the_file_type.startswith(('PE32+ executable (DLL)', 'PE32 executable (DLL)')):
+            the_ext = ['.dll']
+        elif the_file_type.startswith(('PE32+ executable (native)', 'PE32 executable (native)')):
+            the_ext = ['.sys']
+        elif the_file_type.startswith(('PE32+ executable', 'PE32 executable')):
+            the_ext = ['.exe']
+        elif the_file_type.startswith('PDF document'):
+            the_ext = ['.pdf']
+        elif the_file_type == 'Microsoft Word 2007+':
             the_ext = ['.docx']
         elif the_file_type == 'Microsoft Excel 2007+':
             the_ext = ['.xlsx']
         elif the_file_type == 'Microsoft PowerPoint 2007+':
             the_ext = ['.pptx']
+        elif the_file_type.startswith('Zip archive data'):
+            if 'APK(Android application package)' in the_file_type:
+                the_ext = ['.apk']
+            else:
+                the_ext = ['.zip']
+        elif the_file_type.startswith('7-zip archive data'):
+            the_ext = ['.7z']
+        elif the_file_type.startswith('RAR archive data'):
+            the_ext = ['.rar']
+        elif the_file_type.startswith('gzip compressed data'):
+            the_ext = ['.gz', '.tar.gz']
+        elif the_file_type.startswith('PNG image data'):
+            the_ext = ['.png']
+        elif the_file_type.startswith('JPEG image data'):
+            the_ext = ['.jpg']
+        elif the_file_type.startswith('PC bitmap'):
+            the_ext = ['.bmp']
+        elif the_file_type.startswith('GIF image data'):
+            the_ext = ['.gif']
+        elif the_file_type.startswith('Audio file with ID3'):
+            the_ext = ['.mp3']
+        elif the_file_type.startswith('ISO Media, MP4 Base Media'):
+            the_ext = ['.mp4']
+        elif the_file_type.startswith('Macromedia Flash Video'):
+            the_ext = ['.flv']
+        elif the_file_type.startswith('RIFF (little-endian) data, AVI'):
+            the_ext = ['.avi']
         elif the_file_type.startswith(('ASCII text', 'UTF-8 Unicode text')):
             the_ext = ['.txt']
 
