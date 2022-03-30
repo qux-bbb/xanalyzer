@@ -50,17 +50,17 @@ class FileAnalyzer():
                     the_file_type = 'Microsoft PowerPoint 2007+'
 
         if the_file_type.startswith('Composite Document File V2 Document'):
-            if 'WordDocument'.encode('utf16')[2:] in the_content:
+            if 'WordDocument'.encode('utf_16_le') in the_content:
                 if 'Name of Creating Application: WPS' in the_file_type:
                     the_ext = ['.doc', '.wps']
                 else:
                     the_ext = ['.doc']
-            elif 'Workbook'.encode('utf16')[2:] in the_content:
+            elif 'Workbook'.encode('utf_16_le') in the_content:
                 if 'Name of Creating Application: WPS' in the_file_type:
                     the_ext = ['.xls', '.et']
                 else:
                     the_ext = ['.xls']
-            elif 'PowerPoint Document'.encode('utf16')[2:] in the_content:
+            elif 'PowerPoint Document'.encode('utf_16_le') in the_content:
                 if 'Name of Creating Application: WPS' in the_file_type:
                     the_ext = ['.ppt', '.dps']
                 else:
