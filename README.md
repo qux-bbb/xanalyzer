@@ -41,7 +41,7 @@ Process some files and urls.
 optional arguments:
   -h, --help            show this help message and exit 
   -f FILE [FILE ...], --file FILE [FILE ...]
-                        analyze one or more files       
+                        analyze one or more files, can be a folder path
   -u URL, --url URL     analyze the url
   -s, --save            save log and data
 ```
