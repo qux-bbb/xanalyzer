@@ -109,6 +109,10 @@ class FileAnalyzer():
             the_ext = ['.avi']
         elif the_file_type.startswith(('ASCII text', 'UTF-8 Unicode text')):
             the_ext = ['.txt']
+        elif the_file_type.startswith('tcpdump capture file'):
+            the_ext = ['.pcap']
+        elif the_file_type.startswith('pcap-ng capture file'):
+            the_ext = ['.pcapng']
 
         return the_file_type, the_ext
 
@@ -203,6 +207,14 @@ class FileAnalyzer():
             recommended_tool_info_list.append(
                 ['Microsoft Office PowerPoint', tools_info.get('Microsoft Office')]
             )
+        elif self.file_type.startswith(('tcpdump capture file', 'pcap-ng capture file')):
+            recommended_tool_info_list.extend(
+                [
+                    ['Wireshark', tools_info.get('Wireshark')],
+                    ['BruteShark', tools_info.get('BruteShark')]
+                ]
+            )
+
         return recommended_tool_info_list
 
     def str_scan(self):

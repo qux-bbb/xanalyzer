@@ -57,7 +57,9 @@ def test_many_filetypes():
         # WPS创建的office2007+文档
         'wps.docx_', 'wps.xlsx_', 'wps.pptx_',
         # 常用压缩包
-        'hello.zip_', 'hello.7z_', 'hello.rar_'
+        'hello.zip_', 'hello.7z_', 'hello.rar_',
+        # 流量包文件
+        'http.pcap_', 'http.pcapng_',
     ]
     for filename in filenames:
         expect_ext = ['.' + filename[:-1].split('.')[1]]

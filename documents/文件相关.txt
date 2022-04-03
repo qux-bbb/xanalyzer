@@ -9,3 +9,4 @@
     图片文件: png/jpg/bmp/gif
     音频文件: mp3
     视频文件: mp4/flv/avi
+    流量包文件: pcap/pcapng
