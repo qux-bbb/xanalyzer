@@ -70,7 +70,7 @@ class FileAnalyzer():
             the_ext = ['.dll']
         elif the_file_type.startswith(('PE32+ executable (native)', 'PE32 executable (native)')):
             the_ext = ['.sys']
-        elif the_file_type.startswith(('PE32+ executable', 'PE32 executable')):
+        elif the_file_type.startswith(('PE32+ executable', 'PE32 executable', 'MS-DOS executable')):
             the_ext = ['.exe']
         elif the_file_type.startswith('PDF document'):
             the_ext = ['.pdf']
