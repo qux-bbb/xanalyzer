@@ -7,7 +7,9 @@
     "dnSpy": "https://github.com/dnSpyEx/dnSpy",
     "x64dbg": "https://x64dbg.com",
     "WPS Office": "https://www.wps.cn",
-    "Microsoft Office": "https://www.office.com",
+    "Microsoft Office Word": "https://www.office.com",
+    "Microsoft Office Excel": "https://www.office.com",
+    "Microsoft Office PowerPoint": "https://www.office.com",
     "Wireshark": "https://www.wireshark.org",
     "BruteShark": "https://github.com/jilvan1234/BruteShark"
 }

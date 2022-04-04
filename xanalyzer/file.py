@@ -173,48 +173,35 @@ class FileAnalyzer():
         return all_strs
 
     def get_tool_recommendations(self):
+        recommended_tool_names = []
+
+        if 'UPX compressed' in self.file_type:
+            recommended_tool_names.append('UPX')
+        elif 'Mono/.Net assembly' in self.file_type:
+            recommended_tool_names.append('dnSpy')
+        elif 'APK(Android application package)' in self.file_type:
+            recommended_tool_names.append('JADX')
+        elif 'Name of Creating Application: WPS' in self.file_type:
+            recommended_tool_names.append('WPS Office')
+        elif 'Microsoft Word 2007+' == self.file_type \
+                or 'Name of Creating Application: Microsoft Office Word' in self.file_type:
+            recommended_tool_names.append('Microsoft Office Word')
+        elif 'Microsoft Excel 2007+' == self.file_type \
+                or 'Name of Creating Application: Microsoft Office Excel' in self.file_type:
+            recommended_tool_names.append('Microsoft Office Excel')
+        elif 'Microsoft PowerPoint 2007+' == self.file_type \
+                or 'Name of Creating Application: Microsoft Office PowerPoint' in self.file_type:
+            recommended_tool_names.append('Microsoft Office PowerPoint')
+        elif self.file_type.startswith(('tcpdump capture file', 'pcap-ng capture file')):
+            recommended_tool_names.extend(['Wireshark', 'BruteShark'])
+
         with open(Config.tools_info_path, 'r') as f:
             tools_info = json.load(f)
         recommended_tool_info_list = []
-        if 'UPX compressed' in self.file_type:
+        for recommended_tool_name in recommended_tool_names:
             recommended_tool_info_list.append(
-                ['UPX', tools_info.get('UPX')]
+                f'{recommended_tool_name}: {tools_info.get(recommended_tool_name)}'
             )
-        elif 'Mono/.Net assembly' in self.file_type:
-            recommended_tool_info_list.append(
-                ['dnSpy', tools_info.get('dnSpy')]
-            )
-        elif 'APK(Android application package)' in self.file_type:
-            recommended_tool_info_list.append(
-                ['JADX', tools_info.get('JADX')]
-            )
-        elif 'Name of Creating Application: WPS' in self.file_type:
-            recommended_tool_info_list.append(
-                ['WPS Office', tools_info.get('WPS Office')]
-            )
-        elif 'Microsoft Word 2007+' == self.file_type \
-                or 'Name of Creating Application: Microsoft Office Word' in self.file_type:
-            recommended_tool_info_list.append(
-                ['Microsoft Office Word', tools_info.get('Microsoft Office')]
-            )
-        elif 'Microsoft Excel 2007+' == self.file_type \
-                or 'Name of Creating Application: Microsoft Office Excel' in self.file_type:
-            recommended_tool_info_list.append(
-                ['Microsoft Office Excel', tools_info.get('Microsoft Office')]
-            )
-        elif 'Microsoft PowerPoint 2007+' == self.file_type \
-                or 'Name of Creating Application: Microsoft Office PowerPoint' in self.file_type:
-            recommended_tool_info_list.append(
-                ['Microsoft Office PowerPoint', tools_info.get('Microsoft Office')]
-            )
-        elif self.file_type.startswith(('tcpdump capture file', 'pcap-ng capture file')):
-            recommended_tool_info_list.extend(
-                [
-                    ['Wireshark', tools_info.get('Wireshark')],
-                    ['BruteShark', tools_info.get('BruteShark')]
-                ]
-            )
-
         return recommended_tool_info_list
 
     def str_scan(self):
@@ -234,7 +221,7 @@ class FileAnalyzer():
         if recommended_tool_info_list:
             log.info('recommended tool info:')
             for recommended_tool_info in recommended_tool_info_list:
-                log.info(f'    {recommended_tool_info[0]}: {recommended_tool_info[1]}')
+                log.info(f'    {recommended_tool_info}')
 
     def search_str(self, want='ctf'):
         # TODO 查找敏感字符串
