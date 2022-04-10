@@ -86,15 +86,22 @@ class UrlAnalyzer:
 
     def link_and_subdomain_scan(self):
         """
-        扫描站点内所有链接和子域名
+        扫描url下所有链接和子域名
+        如url为: http://www.example.com/hello/a.html
+        则只获取 "/hello/" 路径下的url继续访问，符合直觉
         """
         if self.hostname_type == 'domain':
-            log.info('scanning site link and subdomain...')
+            log.info('scanning link and subdomain...')
         else:
-            log.info('scanning site link...')
-        links_file_path = os.path.join(Config.conf['analyze_data_path'], 'url_links.txt')
+            log.info('scanning link...')
+        if Config.conf['save_flag']:
+            links_file_path = os.path.join(Config.conf['analyze_data_path'], 'url_links.txt')
         ignore_tails = ('.jpg', '.png', '.gif', '.ico', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', 'pptx',
                         '.apk', '.wav', '.zip', '.rar', '.7z')
+
+        path_limit = self.parsed_url.path
+        if (path_limit.endswith(('.html', '.php')) or path_limit.endswith(ignore_tails)) and '/' in path_limit:
+            path_limit = path_limit.rsplit('/', maxsplit=1)[0] + '/'
 
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0",
@@ -134,13 +141,15 @@ class UrlAnalyzer:
                     if Config.conf['save_flag']:
                         with open(links_file_path, 'a') as f:
                             f.write(f'{joined_link_rstrip}\n')
-                # 链接在本站下、不是资源链接、不在待请求列表里，则添加到待请求列表
-                if self.hostname in joined_link_rstrip\
+                # 链接在本站下、在同一父path下、不是资源链接、不在待请求列表里，则添加到待请求列表
+                parsed_joined_link_rstrip = urlparse(joined_link_rstrip)
+                if self.hostname == parsed_joined_link_rstrip.hostname\
+                        and parsed_joined_link_rstrip.path.startswith(path_limit)\
                         and not joined_link_rstrip.endswith(ignore_tails)\
                         and joined_link_rstrip not in links_to_req:
                     links_to_req.append(joined_link_rstrip)
 
-        log.info(f'site link num: {len(self.links)}')
+        log.info(f'link num: {len(self.links)}')
         if self.hostname_type == 'domain' and self.subdomain_list:
             log.info(f'subdomain_list: {self.subdomain_list}')
 
