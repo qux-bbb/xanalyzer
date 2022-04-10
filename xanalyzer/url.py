@@ -46,6 +46,9 @@ class UrlAnalyzer:
         return ip_list
 
     def get_basic_info(self):
+        """
+        获取状态码和robots.txt信息
+        """
         basic_info = {}
         res = requests.get(self.url)
         status_code = res.status_code
@@ -58,6 +61,9 @@ class UrlAnalyzer:
         return basic_info
 
     def basic_scan(self):
+        """
+        基本扫描，包括解析ip、url请求返回状态码、可能的robots.txt内容
+        """
         if self.hostname_type == 'domain':
             if self.resolved_ip_list:
                 log.info(f'resolved_ip_list: {self.resolved_ip_list}')
