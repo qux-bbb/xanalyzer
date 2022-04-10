@@ -50,7 +50,6 @@ def main():
         log.info('processing {}'.format(args.url))
         url_analyzer = UrlAnalyzer(args.url)
         url_analyzer.run()
-        # TODO 增加url的处理方式, 集成 WebSiteLinkScanner 和 PageFinder
         log.info('-' * 80)
 
     if Config.conf['save_flag']:
