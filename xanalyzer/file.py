@@ -172,6 +172,13 @@ class FileAnalyzer():
         all_strs = re.findall(rb'[\x21-\x7e]{4,}', file_content)
         return all_strs
 
+    def get_wide_strs(self):
+        the_file = open(self.file_path, 'rb')
+        file_content = the_file.read()
+        the_file.close()
+        all_strs = re.findall(rb'(?:[\x21-\x7e]\x00){4,}', file_content)
+        return all_strs
+
     def get_tool_recommendations(self):
         recommended_tool_names = []
 
@@ -213,6 +220,17 @@ class FileAnalyzer():
                 str_data_path = os.path.join(Config.conf['analyze_data_path'], str_file_name)
                 with open(str_data_path, 'wb') as f:
                     for a_str in all_strs:
+                        f.write(a_str+b'\n')
+                log.info(f'{str_file_name} saved')
+
+        all_wide_strs = self.get_wide_strs()
+        if all_wide_strs:
+            log.info(f'wide str num: {len(all_wide_strs)}')
+            if Config.conf['save_flag']:
+                str_file_name = Path(self.file_path).name+'_wide_strings.txt'
+                str_data_path = os.path.join(Config.conf['analyze_data_path'], str_file_name)
+                with open(str_data_path, 'wb') as f:
+                    for a_str in all_wide_strs:
                         f.write(a_str+b'\n')
                 log.info(f'{str_file_name} saved')
 
