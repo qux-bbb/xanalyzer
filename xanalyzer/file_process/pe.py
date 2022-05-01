@@ -1,9 +1,9 @@
 # coding:utf8
 
-from datetime import datetime
+import os
 import pefile
 import peutils
-
+from datetime import datetime
 from signify.authenticode.signed_pe import SignedPEFile
 
 from xanalyzer.config import Config
@@ -20,6 +20,14 @@ class PeAnalyzer:
 
     def __del__(self):
         self.pe_file.close()
+
+    def get_pe_size(self):
+        """
+        计算真实PE大小
+        """
+        last_section = self.pe_file.sections[-1]
+        pe_size = last_section.PointerToRawData + last_section.SizeOfRawData
+        return pe_size
 
     def get_versioninfo(self):
         """Get version info.
@@ -108,6 +116,15 @@ class PeAnalyzer:
                 log.error('{}'.format(e))
         return cert_info_list
 
+    def pe_size_scan(self):
+        """
+        判断文件大小是否和纯PE匹配，是否有多余数据
+        """
+        file_size = os.path.getsize(self.file_path)
+        pe_size = self.get_pe_size()
+        if file_size != pe_size:
+            log.warning(f'weird size: file_size {file_size}, pe_size {pe_size}')
+
     def compile_time_scan(self):
         """
         查看编译时间
@@ -171,6 +188,7 @@ class PeAnalyzer:
                     log.warning('   Verify result: {}'.format(verify_result))
 
     def run(self):
+        self.pe_size_scan()
         self.compile_time_scan()
         self.pdb_scan()
         self.versioninfo_scan()
