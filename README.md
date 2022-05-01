@@ -55,7 +55,7 @@ xanalyzer -f hello.exe
 xanalyzer -u "https://www.baidu.com/s?wd=hello"
 ```
     
-# 开发
+## 开发
 ```r
 git clone https://github.com/qux-bbb/xanalyzer
 cd xanalyzer
@@ -65,7 +65,25 @@ python setup.py develop
 ```
 这样之后就可以用pycharm或vscode开发调试了  
 
-# 其它
+## 打包发布
+该步骤仅本人使用  
+```r
+pip install -r requirements.my.txt
+python setup.py sdist bdist_wheel
+```
+
+在github创建Release  
+1. 标题为`xanalyzer <version>`，如: `xanalyzer v0.2.0`  
+2. 内容基于CHANGELOG.md做一些修改
+3. 将dist文件夹下所有文件传到Release页面  
+然后发布即可  
+
+将文件传到pypi(需要账号密码)  
+```r
+python -m twine upload --repository pypi dist/*
+```
+
+## 其它
 这个项目的有些功能可能会用到:  
 https://github.com/mitre/multiscanner  
 
