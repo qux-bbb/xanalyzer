@@ -35,6 +35,11 @@ cd xanalyzer
 python setup.py install
 ```
 
+如果系统是 Debian/Ubuntu，需要安装依赖：  
+```r
+sudo apt-get install libmagic1
+```
+
 ## 使用帮助
 ```r
 usage: xanalyzer [-h] (-f FILE [FILE ...] | -u URL) [-s]
