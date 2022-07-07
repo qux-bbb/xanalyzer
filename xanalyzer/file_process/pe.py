@@ -119,11 +119,12 @@ class PeAnalyzer:
     def pe_size_scan(self):
         """
         判断文件大小是否和纯PE匹配，是否有多余数据
+        因为是PE的特殊情况，不考虑和文件大小放在一起
         """
         file_size = os.path.getsize(self.file_path)
         pe_size = self.get_pe_size()
         if file_size != pe_size:
-            log.warning(f'weird size: file_size {file_size}, pe_size {pe_size}')
+            log.warning(f'pe weird size: file_size {file_size}, pe_size {pe_size}')
 
     def compile_time_scan(self):
         """
