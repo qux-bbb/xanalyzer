@@ -14,7 +14,7 @@ def test_normal_pe_compile_time():
     file_analyzer = FileAnalyzer(weird_pe_path)
     assert file_analyzer.file_type == 'PE32 executable (console) Intel 80386, for MS Windows'
 
-    pe_analyzer = PeAnalyzer(weird_pe_path)
+    pe_analyzer = PeAnalyzer(file_analyzer)
     compile_time = pe_analyzer.get_compile_time()
     assert compile_time == '2022-03-27 14:38:47'
 
@@ -28,6 +28,6 @@ def test_weird_pe_compile_time():
     file_analyzer = FileAnalyzer(weird_pe_path)
     assert file_analyzer.file_type == 'MS-DOS executable'
 
-    pe_analyzer = PeAnalyzer(weird_pe_path)
+    pe_analyzer = PeAnalyzer(file_analyzer)
     compile_time = pe_analyzer.get_compile_time()
     assert compile_time == '2006-11-06 11:44:05'

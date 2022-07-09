@@ -1,6 +1,5 @@
 # coding:utf8
 
-import os
 import pefile
 import peutils
 from datetime import datetime
@@ -11,12 +10,12 @@ from xanalyzer.utils import log
 
 
 class PeAnalyzer:
-    file_path = None
+    file_analyzer = None
     pe_file = None
 
-    def __init__(self, file_path):
-        self.file_path = file_path
-        self.pe_file = pefile.PE(self.file_path)
+    def __init__(self, file_analyzer):
+        self.file_analyzer = file_analyzer
+        self.pe_file = pefile.PE(self.file_analyzer.file_path)
 
     def __del__(self):
         self.pe_file.close()
@@ -93,7 +92,7 @@ class PeAnalyzer:
         security_entry = self.pe_file.OPTIONAL_HEADER.DATA_DIRECTORY[security_index]
         if not security_entry.Size or not security_entry.VirtualAddress:
             return
-        with open(self.file_path, 'rb') as f:
+        with open(self.file_analyzer.file_path, 'rb') as f:
             try:
                 pe = SignedPEFile(f)
                 for signed_data in pe.signed_datas:
@@ -121,10 +120,9 @@ class PeAnalyzer:
         判断文件大小是否和纯PE匹配，是否有多余数据
         因为是PE的特殊情况，不考虑和文件大小放在一起
         """
-        file_size = os.path.getsize(self.file_path)
         pe_size = self.get_pe_size()
-        if file_size != pe_size:
-            log.warning(f'pe weird size: file_size {file_size}, pe_size {pe_size}')
+        if self.file_analyzer.file_size != pe_size:
+            log.warning(f'pe weird size: file_size {self.file_analyzer.file_size}, pe_size {pe_size}')
 
     def compile_time_scan(self):
         """

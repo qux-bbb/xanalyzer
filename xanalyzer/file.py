@@ -253,7 +253,9 @@ class FileAnalyzer():
         log.info('windows style file type: {}'.format(self.get_windows_style_file_size(self.file_size)))
 
         self.str_scan()
+
         if self.file_type.startswith(('PE', 'MS-DOS executable')):
-            pe_analyzer = PeAnalyzer(self.file_path)
+            pe_analyzer = PeAnalyzer(self)  # 把自身传入，让PeAnalyzer可以使用和修改FileAnalyzer实例(属性和方法)
             pe_analyzer.run()
+        
         self.tool_recommendations_scan()

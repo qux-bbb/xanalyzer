@@ -3,7 +3,7 @@
 from xanalyzer.file import FileAnalyzer
 
 
-def test_upx_packer():
+def test_windows_style_file_size():
     size_result_list = [
         (0, '0 字节'),
         (1, '1 字节 (1 字节)'),
