@@ -11,5 +11,6 @@
     "Microsoft Office Excel": "https://www.office.com",
     "Microsoft Office PowerPoint": "https://www.office.com",
     "Wireshark": "https://www.wireshark.org",
-    "BruteShark": "https://github.com/jilvan1234/BruteShark"
+    "BruteShark": "https://github.com/jilvan1234/BruteShark",
+    "PyInstaller Extractor": "https://github.com/extremecoders-re/pyinstxtractor"
 }

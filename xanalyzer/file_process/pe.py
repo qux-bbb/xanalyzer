@@ -1,5 +1,6 @@
 # coding:utf8
 
+import re
 import pefile
 import peutils
 from datetime import datetime
@@ -79,10 +80,28 @@ class PeAnalyzer:
                 return debug_entry.entry.PdbFileName.strip(b'\x00').decode('utf8')
         return
 
-    def get_peid_result(self):
+    def get_packer_result(self):
         signatures = peutils.SignatureDatabase(Config.peid_signature_path)
         matches = signatures.match(self.pe_file, ep_only=True)
-        return matches
+
+        if matches:
+            return matches
+
+        the_file = open(self.file_analyzer.file_path, 'rb')
+        file_content = the_file.read()
+        the_file.close()
+    
+        # Check PyInstaller
+        if b'PyInstaller: FormatMessageW failed.' in file_content:
+            python_ver_info_s = re.search(rb'(python[0-9.]{2,4})\.dll', file_content)
+            if python_ver_info_s:
+                python_ver_info = python_ver_info_s.group(1).decode()
+                matches = [f'PyInstaller, {python_ver_info}']
+            else:
+                matches = ['PyInstaller, unknown python version']
+            return matches
+
+        return None
 
     def verify_cert(self):
         cert_info_list = []
@@ -159,12 +178,13 @@ class PeAnalyzer:
             section_names.append(section.Name.strip(b'\x00'))
         log.info(f'section names: {section_names}')
 
-    def peid_scan(self):
+    def packer_scan(self):
         """
         查壳
         """
-        matches = self.get_peid_result()
+        matches = self.get_packer_result()
         if matches:
+            self.file_analyzer.packer_list.extend(matches)
             log.info('packer: {}'.format(matches))
 
     def cert_scan(self):
@@ -193,4 +213,4 @@ class PeAnalyzer:
         self.versioninfo_scan()
         self.cert_scan()
         self.section_name_scan()
-        self.peid_scan()
+        self.packer_scan()

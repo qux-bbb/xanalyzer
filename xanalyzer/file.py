@@ -18,6 +18,7 @@ class FileAnalyzer():
     file_size = None
     file_type = None
     possible_extension_names = []
+    packer_list = []
 
     def __init__(self, file_path):
         self.file_path = file_path
@@ -201,6 +202,10 @@ class FileAnalyzer():
             recommended_tool_names.append('Microsoft Office PowerPoint')
         elif self.file_type.startswith(('tcpdump capture file', 'pcap-ng capture file')):
             recommended_tool_names.extend(['Wireshark', 'BruteShark'])
+
+        for packer in self.packer_list:
+            if packer.startswith('PyInstaller,'):
+                recommended_tool_names.append('PyInstaller Extractor')
 
         with open(Config.tools_info_path, 'r') as f:
             tools_info = json.load(f)
