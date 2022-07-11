@@ -170,14 +170,14 @@ class FileAnalyzer():
         the_file = open(self.file_path, 'rb')
         file_content = the_file.read()
         the_file.close()
-        all_strs = re.findall(rb'[\x21-\x7e]{4,}', file_content)
+        all_strs = re.findall(rb'[\x20-\x7e]{4,}', file_content)
         return all_strs
 
     def get_wide_strs(self):
         the_file = open(self.file_path, 'rb')
         file_content = the_file.read()
         the_file.close()
-        all_strs = re.findall(rb'(?:[\x21-\x7e]\x00){4,}', file_content)
+        all_strs = re.findall(rb'(?:[\x20-\x7e]\x00){4,}', file_content)
         return all_strs
 
     def get_tool_recommendations(self):
