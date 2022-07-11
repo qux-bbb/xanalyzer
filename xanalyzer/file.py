@@ -10,6 +10,7 @@ from zipfile import ZipFile
 
 from xanalyzer.utils import log
 from xanalyzer.file_process.pe import PeAnalyzer
+from xanalyzer.file_process.elf import ElfAnalyzer
 from xanalyzer.config import Config
 
 
@@ -262,5 +263,8 @@ class FileAnalyzer():
         if self.file_type.startswith(('PE', 'MS-DOS executable')):
             pe_analyzer = PeAnalyzer(self)  # 把自身传入，让PeAnalyzer可以使用和修改FileAnalyzer实例(属性和方法)
             pe_analyzer.run()
+        elif self.file_type.startswith('ELF'):
+            elf_analyzer = ElfAnalyzer(self)
+            elf_analyzer.run()
         
         self.tool_recommendations_scan()
