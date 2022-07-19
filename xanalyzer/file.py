@@ -184,9 +184,7 @@ class FileAnalyzer():
     def get_tool_recommendations(self):
         recommended_tool_names = []
 
-        if 'UPX compressed' in self.file_type:
-            recommended_tool_names.append('UPX')
-        elif 'Mono/.Net assembly' in self.file_type:
+        if 'Mono/.Net assembly' in self.file_type:
             recommended_tool_names.append('dnSpy')
         elif 'APK(Android application package)' in self.file_type:
             recommended_tool_names.append('JADX')
@@ -205,6 +203,8 @@ class FileAnalyzer():
             recommended_tool_names.extend(['Wireshark', 'BruteShark'])
 
         for packer in self.packer_list:
+            if packer.startswith('UPX '):
+                recommended_tool_names.append('UPX')
             if packer.startswith('PyInstaller,'):
                 recommended_tool_names.append('PyInstaller Extractor')
 

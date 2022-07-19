@@ -1,5 +1,6 @@
 # coding:utf8
 
+import re
 from xanalyzer.utils import log
 
 
@@ -18,7 +19,16 @@ class ElfAnalyzer:
         if b'E: neither argv[0] nor $_ works.' in file_content:
             matches = ['Shc, Shell script compiler, https://github.com/neurobin/shc']
             return matches
-
+        
+        # Check UPX
+        if b'$Info: This file is packed with the UPX executable packer' in file_content:
+            upx_ver_s = re.search(rb'\$Id: (UPX .+?) Copyright', file_content)
+            if upx_ver_s:
+                matches = [upx_ver_s.group(1).decode()]
+            else:
+                matches = ['UPX unknown version']
+            return matches
+            
         return None
 
     def packer_scan(self):
