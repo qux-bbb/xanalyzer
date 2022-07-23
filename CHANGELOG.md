@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.2.1
+- 适配linux
+- 增加packer检测:pyinstaller
+- 增加packer检测:shc
+- 增加packer检测:elf的UPX
+- 字符串扫描包含空格
+
 ## 0.2.0
 - 增加建议工具
 - 增加文件后缀猜测
