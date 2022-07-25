@@ -237,7 +237,7 @@ class FileAnalyzer():
                 str_data_path = os.path.join(Config.conf['analyze_data_path'], str_file_name)
                 with open(str_data_path, 'wb') as f:
                     for a_str in all_wide_strs:
-                        f.write(a_str+b'\n')
+                        f.write(a_str+b'\n\x00')
                 log.info(f'{str_file_name} saved')
 
     def tool_recommendations_scan(self):
