@@ -184,8 +184,12 @@ class FileAnalyzer():
     def get_tool_recommendations(self):
         recommended_tool_names = []
 
-        if 'Mono/.Net assembly' in self.file_type:
-            recommended_tool_names.append('dnSpy')
+        if self.file_type.startswith(('PE', 'MS-DOS executable')):
+            recommended_tool_names.append('XPEViewer')
+            if 'Mono/.Net assembly' in self.file_type:
+                recommended_tool_names.append('dnSpy')
+        elif self.file_type.startswith('ELF'):
+            recommended_tool_names.append('XELFViewer')
         elif 'APK(Android application package)' in self.file_type:
             recommended_tool_names.append('JADX')
         elif 'Name of Creating Application: WPS' in self.file_type:
