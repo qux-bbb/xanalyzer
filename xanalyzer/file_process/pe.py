@@ -187,7 +187,7 @@ class PeAnalyzer:
         """
         pe_size = self.get_pe_size()
         if self.file_analyzer.file_size != pe_size:
-            log.warning(f'pe weird size: file_size {self.file_analyzer.file_size}, pe_size {pe_size}')
+            log.warning(f'pe weird size: file_size {self.file_analyzer.file_size}({hex(self.file_analyzer.file_size)}), pe_size {pe_size}({hex(pe_size)})')
 
     def compile_time_scan(self):
         """
