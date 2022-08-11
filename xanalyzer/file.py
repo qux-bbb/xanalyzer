@@ -20,20 +20,21 @@ class FileAnalyzer():
     file_type = None
     possible_extension_names = []
     packer_list = []
+    pe_resource_type_list = []
 
     def __init__(self, file_path):
         self.file_path = file_path
         self.file_size = os.path.getsize(self.file_path)
-        self.file_type, self.possible_extension_names = self.guess_type_and_ext()
+        the_file = open(self.file_path, 'rb')
+        the_content = the_file.read()
+        the_file.close()
+        self.file_type, self.possible_extension_names = self.guess_type_and_ext(the_content)
 
-    def guess_type_and_ext(self):
+    def guess_type_and_ext(self, the_content):
         """
         猜测文件类型和扩展名
         :return: file_type, possible_extension_names
         """
-        the_file = open(self.file_path, 'rb')
-        the_content = the_file.read()
-        the_file.close()
         # magic.from_file不能通过中文路径读取文件，暂时使用magic.from_buffer
         the_file_type = magic.from_buffer(the_content)
         the_ext = []
@@ -188,6 +189,10 @@ class FileAnalyzer():
             recommended_tool_names.append('XPEViewer')
             if 'Mono/.Net assembly' in self.file_type:
                 recommended_tool_names.append('dnSpy')
+            for extension in ['.ico', '.png', '.jpg', '.bmp', '.gif', '.exe', '.dll', '.sys']:
+                if extension in self.pe_resource_type_list:
+                    recommended_tool_names.append('Resource Hacker')
+                    break
         elif self.file_type.startswith('ELF'):
             recommended_tool_names.append('XELFViewer')
         elif 'APK(Android application package)' in self.file_type:

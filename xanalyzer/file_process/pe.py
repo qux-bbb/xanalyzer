@@ -103,6 +103,52 @@ class PeAnalyzer:
 
         return None
 
+    def get_resource_type_dict(self):
+        # TODO 通过特殊的id识别icon，改一下数据类型和后缀
+        resource_type_dict = {}
+        if hasattr(self.pe_file, 'DIRECTORY_ENTRY_RESOURCE'):
+            icon_type_id_list = [
+                pefile.RESOURCE_TYPE['RT_ICON'],
+                pefile.RESOURCE_TYPE['RT_GROUP_ICON']
+            ]
+            for resource_entry in self.pe_file.DIRECTORY_ENTRY_RESOURCE.entries:
+                resource_entry_id = resource_entry.id
+                resource_entry_name = resource_entry.name
+                if resource_entry_name:
+                    resource_entry_info = f'{resource_entry_id}:{resource_entry_name}'
+                else:
+                    resource_entry_info = f'{resource_entry_id}'
+                for d_entry in resource_entry.directory.entries:
+                    d_entry_id = d_entry.id
+                    d_entry_name = d_entry.name
+                    if d_entry_name:
+                        d_entry_info = f'{d_entry_id}:{d_entry_name}'
+                    else:
+                        d_entry_info = f'{d_entry_id}'
+                    for dd_entry in d_entry.directory.entries:
+                        dd_entry_id = dd_entry.id
+                        dd_entry_name = dd_entry.name
+                        if dd_entry_name:
+                            dd_entry_info = f'{dd_entry_id}:{dd_entry_name}'
+                        else:
+                            dd_entry_info = f'{dd_entry_id}'
+
+                        key = f'{resource_entry_info}_{d_entry_info}_{dd_entry_info}'
+
+                        data_rva = dd_entry.data.struct.OffsetToData
+                        size = dd_entry.data.struct.Size
+                        data = self.pe_file.get_memory_mapped_image()[data_rva:data_rva+size]
+                        data_type, possible_extension_names = self.file_analyzer.guess_type_and_ext(data)
+                        if (
+                            data_type == 'data'
+                            and not possible_extension_names
+                            and resource_entry_id in icon_type_id_list
+                        ):
+                            data_type = 'icon'
+                            possible_extension_names = ['.ico']
+                        resource_type_dict[key] = [data_type, possible_extension_names]
+        return resource_type_dict
+
     def verify_cert(self):
         cert_info_list = []
         security_index = pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_SECURITY"]
@@ -206,6 +252,23 @@ class PeAnalyzer:
                 else:
                     log.warning('   Verify result: {}'.format(verify_result))
 
+    def resource_scan(self):
+        """
+        检查资源类型
+        """
+        resource_type_dict = self.get_resource_type_dict()
+        resource_type_set = set()
+        weird_resource_type_set = set()
+        for data_type, possible_extension_names in resource_type_dict.values():
+            for possible_extension_name in possible_extension_names:
+                resource_type_set.add(possible_extension_name)
+                if possible_extension_name in ['.exe', '.dll', '.sys']:
+                    weird_resource_type_set.add(possible_extension_name)
+        self.file_analyzer.pe_resource_type_list = list(resource_type_set)
+        weird_resource_type_list = list(weird_resource_type_set)
+        if weird_resource_type_list:
+            log.warning(f'pe weird resource type: {weird_resource_type_list}')
+
     def run(self):
         self.pe_size_scan()
         self.compile_time_scan()
@@ -214,3 +277,4 @@ class PeAnalyzer:
         self.cert_scan()
         self.section_name_scan()
         self.packer_scan()
+        self.resource_scan()
