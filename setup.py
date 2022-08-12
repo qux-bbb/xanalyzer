@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='xanalyzer',
-    version='0.2.1',
+    version=open('xanalyzer/VERSION', 'r').read(),
     packages=find_packages(),
     package_data={
         'xanalyzer': [

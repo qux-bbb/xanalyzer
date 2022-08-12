@@ -18,8 +18,13 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-f', '--file', nargs='+', help='analyze one or more files, can be a folder path')
     group.add_argument('-u', '--url', help='analyze the url')
+    group.add_argument('--version', action='store_true', help='print version info')
     parser.add_argument('-s', '--save', action='store_true', help='save log and data')
     args = parser.parse_args()
+
+    if args.version:
+        print(Config.VERSION)
+        return
 
     Config.init(args.save)
     init_log()
