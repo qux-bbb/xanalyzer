@@ -15,6 +15,7 @@
         - 证书验证
         - 节区名称
         - 查壳
+        - 资源段扫描
     - ELF文件
         - 查壳
     - 建议使用的工具
@@ -25,10 +26,11 @@
     - 站内子域名扫描
 
 ## 安装
-方法1 - 使用pip安装：  
+方法1 - 使用pipx安装：  
 ```r
-pip install xanalyzer
+pipx install xanalyzer
 ```
+pipx: https://pypa.github.io/pipx/  
 
 方法2 - 从源码安装：  
 ```r
@@ -44,15 +46,16 @@ sudo apt-get install libmagic1
 
 ## 使用帮助
 ```r
-usage: xanalyzer [-h] (-f FILE [FILE ...] | -u URL) [-s]
+usage: xanalyzer [-h] (-f FILE [FILE ...] | -u URL | --version) [-s]
 
 Process some files and urls.
 
 optional arguments:
-  -h, --help            show this help message and exit 
+  -h, --help            show this help message and exit
   -f FILE [FILE ...], --file FILE [FILE ...]
                         analyze one or more files, can be a folder path
   -u URL, --url URL     analyze the url
+  --version             print version info
   -s, --save            save log and data
 ```
 

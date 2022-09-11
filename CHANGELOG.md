@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.2.2
+- 增加PE资源扫描
+- 修正宽字符串输出
+- 建议使用pipx安装
+
 ## 0.2.1
 - 适配linux
 - 增加packer检测:pyinstaller
