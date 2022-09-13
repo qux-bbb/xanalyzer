@@ -82,6 +82,13 @@ pip install -r requirements.my.txt
 python setup.py sdist bdist_wheel
 ```
 
+重新打开一个命令行，转到dist文件夹下本地安装，检查基本功能，举例：  
+```r
+pipx install ./xanalyzer-0.2.3.tar.gz
+xanalyzer --version
+xanalyzer -f ./xanalyzer-0.2.3.tar.gz
+```
+
 在github创建Release  
 1. 标题为`xanalyzer <version>`，如: `xanalyzer v0.2.0`  
 2. 内容基于CHANGELOG.md做一些修改
