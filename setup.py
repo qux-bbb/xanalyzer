@@ -8,7 +8,8 @@ setup(
     package_data={
         'xanalyzer': [
             'data/UserDB.TXT',
-            'data/tools_info.json'
+            'data/tools_info.json',
+            'VERSION',
         ],
     },
     author='qux-bbb',
