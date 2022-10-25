@@ -25,9 +25,12 @@ class PeAnalyzer:
         """
         计算真实PE大小
         """
-        last_section = self.pe_file.sections[-1]
-        pe_size = last_section.PointerToRawData + last_section.SizeOfRawData
-        return pe_size
+        if self.pe_file.sections:
+            last_section = self.pe_file.sections[-1]
+            pe_size = last_section.PointerToRawData + last_section.SizeOfRawData
+            return pe_size
+        else:
+            return
 
     def get_versioninfo(self):
         """Get version info.
@@ -186,7 +189,7 @@ class PeAnalyzer:
         因为是PE的特殊情况，不考虑和文件大小放在一起
         """
         pe_size = self.get_pe_size()
-        if self.file_analyzer.file_size != pe_size:
+        if pe_size and self.file_analyzer.file_size != pe_size:
             log.warning(f'pe weird size: file_size {self.file_analyzer.file_size}({hex(self.file_analyzer.file_size)}), pe_size {pe_size}({hex(pe_size)})')
 
     def compile_time_scan(self):
