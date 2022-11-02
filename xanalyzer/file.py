@@ -5,7 +5,7 @@ import re
 import json
 import magic
 from pathlib import Path
-from hashlib import md5
+from hashlib import md5, sha256
 from zipfile import ZipFile
 
 from xanalyzer.utils import log
@@ -161,12 +161,13 @@ class FileAnalyzer():
 
         return f'{formatted_size} {tmp_unit}{bytes_size}'
 
-    def get_md5(self):
+    def get_md5_sha256(self):
         the_file = open(self.file_path, 'rb')
         file_content = the_file.read()
         the_file.close()
         md5_value = md5(file_content).hexdigest()
-        return md5_value
+        sha256_value = sha256(file_content).hexdigest()
+        return (md5_value, sha256_value)
 
     def get_strs(self):
         the_file = open(self.file_path, 'rb')
@@ -261,7 +262,9 @@ class FileAnalyzer():
         pass
 
     def run(self):
-        log.info('md5: {}'.format(self.get_md5()))
+        md5_value, sha256_value = self.get_md5_sha256()
+        log.info('md5: {}'.format(md5_value))
+        log.info('sha256: {}'.format(sha256_value))
         log.info('file type: {}'.format(self.file_type))
         log.info('possible extension names: {}'.format(self.possible_extension_names))
         log.info('file size: {}'.format(self.file_size))
