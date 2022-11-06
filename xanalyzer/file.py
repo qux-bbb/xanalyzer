@@ -15,12 +15,6 @@ from xanalyzer.config import Config
 
 
 class FileAnalyzer():
-    file_path = None
-    file_size = None
-    file_type = None
-    possible_extension_names = []
-    packer_list = []
-    pe_resource_type_list = []
 
     def __init__(self, file_path):
         self.file_path = file_path
@@ -29,6 +23,8 @@ class FileAnalyzer():
         the_content = the_file.read()
         the_file.close()
         self.file_type, self.possible_extension_names = self.guess_type_and_ext(the_content)
+        self.packer_list = []
+        self.pe_resource_type_list = []
 
     def guess_type_and_ext(self, the_content):
         """
