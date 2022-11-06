@@ -25,12 +25,23 @@ class PeAnalyzer:
         """
         计算真实PE大小
         """
-        if self.pe_file.sections:
+        if not self.pe_file.sections:
+            return
+
+        pe_size = 0
+
+        # 考虑有证书的情况
+        security_index = pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_SECURITY"]
+        if len(self.pe_file.OPTIONAL_HEADER.DATA_DIRECTORY) > security_index:
+            security_entry = self.pe_file.OPTIONAL_HEADER.DATA_DIRECTORY[security_index]
+            if security_entry.Size and security_entry.VirtualAddress:
+                pe_size = security_entry.VirtualAddress + security_entry.Size
+
+        if not pe_size:
             last_section = self.pe_file.sections[-1]
             pe_size = last_section.PointerToRawData + last_section.SizeOfRawData
-            return pe_size
-        else:
-            return
+
+        return pe_size
 
     def get_versioninfo(self):
         """Get version info.
