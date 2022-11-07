@@ -264,7 +264,7 @@ class FileAnalyzer():
         log.info('file type: {}'.format(self.file_type))
         log.info('possible extension names: {}'.format(self.possible_extension_names))
         log.info('file size: {}'.format(self.file_size))
-        log.info('windows style file type: {}'.format(self.get_windows_style_file_size(self.file_size)))
+        log.info('windows style file size: {}'.format(self.get_windows_style_file_size(self.file_size)))
 
         self.str_scan()
 
