@@ -1,5 +1,3 @@
-# coding:utf8
-
 from pathlib import Path
 from xanalyzer.file import FileAnalyzer
 

@@ -1,5 +1,3 @@
-# coding:utf8
-
 import re
 import pefile
 import peutils

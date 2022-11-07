@@ -1,6 +1,3 @@
-#! /usr/bin/env python
-# coding:utf8
-
 import os
 import argparse
 from pathlib import Path
@@ -30,7 +27,7 @@ def main():
     init_log()
 
     log.info('=' * 80)
-    
+
     if args.file:
         file_paths = []
         for the_path in args.file:
