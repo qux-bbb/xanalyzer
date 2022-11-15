@@ -173,20 +173,28 @@ class PeAnalyzer:
             try:
                 pe = SignedPEFile(f)
                 for signed_data in pe.signed_datas:
-                    cert = signed_data.certificates[0]
-                    cert_info = {}
-                    cert_info['subject'] = cert.subject.dn
-                    cert_info['issuer'] = cert.issuer.dn
-                    cert_info['serial_number'] = cert.serial_number
-                    cert_info['valid_from'] = cert.valid_from
-                    cert_info['valid_to'] = cert.valid_to
+                    signer_info = signed_data.signer_info
+                    signer_serial_number = signer_info.serial_number._value
+                    signer_issuer_dn = signer_info.issuer.dn
+                    cert = None
+                    for tmp_cert in signed_data.certificates:
+                        if tmp_cert.serial_number == signer_serial_number and tmp_cert.issuer.dn == signer_issuer_dn:
+                            cert = tmp_cert
+                            break
+                    if cert:
+                        cert_info = {}
+                        cert_info['subject'] = cert.subject.dn
+                        cert_info['issuer'] = cert.issuer.dn
+                        cert_info['serial_number'] = cert.serial_number
+                        cert_info['valid_from'] = cert.valid_from
+                        cert_info['valid_to'] = cert.valid_to
 
-                    try:
-                        signed_data.verify()
-                        cert_info['verify_result'] = 'valid'
-                    except Exception as e:
-                        cert_info['verify_result'] = 'invalid: {}'.format(e)
-                    cert_info_list.append(cert_info)
+                        try:
+                            signed_data.verify()
+                            cert_info['verify_result'] = 'valid'
+                        except Exception as e:
+                            cert_info['verify_result'] = 'invalid: {}'.format(e)
+                        cert_info_list.append(cert_info)
             except Exception as e:
                 log.error('Error while parsing:')
                 log.error('{}'.format(e))
