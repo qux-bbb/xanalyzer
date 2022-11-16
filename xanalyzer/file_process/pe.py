@@ -116,7 +116,6 @@ class PeAnalyzer:
         return None
 
     def get_resource_type_dict(self):
-        # TODO 通过特殊的id识别icon，改一下数据类型和后缀
         resource_type_dict = {}
         if hasattr(self.pe_file, 'DIRECTORY_ENTRY_RESOURCE'):
             icon_type_id_list = [

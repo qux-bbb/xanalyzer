@@ -251,10 +251,6 @@ class FileAnalyzer():
             for recommended_tool_info in recommended_tool_info_list:
                 log.info(f'    {recommended_tool_info}')
 
-    def search_str(self, want='ctf'):
-        # TODO 查找敏感字符串
-        pass
-
     def run(self):
         md5_value, sha256_value = self.get_md5_sha256()
         log.info('md5: {}'.format(md5_value))
