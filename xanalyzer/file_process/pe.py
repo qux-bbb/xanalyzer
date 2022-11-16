@@ -186,6 +186,7 @@ class PeAnalyzer:
                         cert_info['subject'] = cert.subject.dn
                         cert_info['issuer'] = cert.issuer.dn
                         cert_info['serial_number'] = cert.serial_number
+                        cert_info['signing_time'] = signer_info.signing_time
                         cert_info['valid_from'] = cert.valid_from
                         cert_info['valid_to'] = cert.valid_to
 
@@ -264,6 +265,10 @@ class PeAnalyzer:
                 log.info('   Subject: {}'.format(cert_info.get('subject', '')))
                 log.info('   Issuer: {}'.format(cert_info.get('issuer', '')))
                 log.info('   Serial number: {}'.format(cert_info.get('serial_number', '')))
+                # TODO signify的signing_time大概率获取不到，暂时判断有值再输出
+                signing_time = cert_info.get('signing_time', '')
+                if signing_time:
+                    log.info('   signing time: {}'.format(signing_time))
                 log.info('   Valid from: {}'.format(cert_info.get('valid_from', '')))
                 log.info('   Valid to: {}'.format(cert_info.get('valid_to', '')))
                 verify_result = cert_info.get('verify_result', '')
