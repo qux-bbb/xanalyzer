@@ -84,6 +84,7 @@ python setup.py sdist bdist_wheel
 
 重新打开一个命令行，转到dist文件夹下本地安装，检查基本功能，举例：  
 ```r
+pipx uninstall xanalyzer
 pipx install ./xanalyzer-0.2.3.tar.gz
 xanalyzer --version
 xanalyzer -f ./xanalyzer-0.2.3.tar.gz
