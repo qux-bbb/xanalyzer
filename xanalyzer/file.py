@@ -212,6 +212,9 @@ class FileAnalyzer():
             if packer.startswith('PyInstaller,'):
                 recommended_tool_names.append('PyInstaller Extractor')
 
+        if '.xls' in self.possible_extension_names:
+            recommended_tool_names.append('oletools')
+
         with open(Config.tools_info_path, 'r') as f:
             tools_info = json.load(f)
         recommended_tool_info_list = []
