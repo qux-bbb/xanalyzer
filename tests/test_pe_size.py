@@ -7,7 +7,7 @@ cur_dir_path = Path(__file__).parent
 
 
 def test_pe_size():
-    pe_path = cur_dir_path / 'test_data' / 'HelloCSharp.exe_append_data_'
+    pe_path = cur_dir_path / "test_data" / "HelloCSharp.exe_append_data_"
 
     file_analyzer = FileAnalyzer(pe_path)
     assert file_analyzer.file_size == 0x1205

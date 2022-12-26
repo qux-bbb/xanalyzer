@@ -51,7 +51,9 @@ class PeAnalyzer:
 
         versioninfo = []
 
-        if not hasattr(self.pe_file, "VS_VERSIONINFO") and not hasattr(self.pe_file, "FileInfo"):
+        if not hasattr(self.pe_file, "VS_VERSIONINFO") and not hasattr(
+            self.pe_file, "FileInfo"
+        ):
             return versioninfo
 
         for info_entry in self.pe_file.FileInfo:
@@ -63,16 +65,24 @@ class PeAnalyzer:
                                 entry = {}
                                 entry["name"] = str_entry[0].decode()
                                 entry["value"] = str_entry[1].decode()
-                                if entry["name"] == b"Translation" and len(entry["value"]) == 10:
-                                    entry["value"] = f"0x0{entry['value'][2:5]} 0x0{entry['value'][7:10]}"
+                                if (
+                                    entry["name"] == b"Translation"
+                                    and len(entry["value"]) == 10
+                                ):
+                                    entry[
+                                        "value"
+                                    ] = f"0x0{entry['value'][2:5]} 0x0{entry['value'][7:10]}"
                                 versioninfo.append(entry)
                     elif hasattr(entry, "Var"):
                         for var_entry in entry.Var:
                             if hasattr(var_entry, "entry"):
                                 entry = {}
                                 entry["name"] = list(var_entry.entry.keys())[0].decode()
-                                entry["value"] = list(var_entry.entry.values())[0]  # .decode("latin-1")
-                                if entry["name"] == b"Translation" and len(entry["value"]) == 10:
+                                entry["value"] = list(var_entry.entry.values())[0]
+                                if (
+                                    entry["name"] == b"Translation"
+                                    and len(entry["value"]) == 10
+                                ):
                                     entry["value"] = f"0x0{entry['value'][2:5]} 0x0{entry['value'][7:10]}"
                                 versioninfo.append(entry)
                 except Exception as e:
@@ -87,9 +97,9 @@ class PeAnalyzer:
         return time_str
 
     def get_pdb_path(self):
-        for debug_entry in getattr(self.pe_file, 'DIRECTORY_ENTRY_DEBUG', []):
-            if hasattr(debug_entry.entry, 'PdbFileName'):
-                return debug_entry.entry.PdbFileName.strip(b'\x00').decode('utf8')
+        for debug_entry in getattr(self.pe_file, "DIRECTORY_ENTRY_DEBUG", []):
+            if hasattr(debug_entry.entry, "PdbFileName"):
+                return debug_entry.entry.PdbFileName.strip(b"\x00").decode("utf8")
         return
 
     def get_packer_result(self):
@@ -99,64 +109,69 @@ class PeAnalyzer:
         if matches:
             return matches
 
-        the_file = open(self.file_analyzer.file_path, 'rb')
+        the_file = open(self.file_analyzer.file_path, "rb")
         file_content = the_file.read()
         the_file.close()
-    
+
         # Check PyInstaller
-        if b'PyInstaller: FormatMessageW failed.' in file_content:
-            python_ver_info_s = re.search(rb'(python[0-9.]{2,4})\.dll', file_content)
+        if b"PyInstaller: FormatMessageW failed." in file_content:
+            python_ver_info_s = re.search(rb"(python[0-9.]{2,4})\.dll", file_content)
             if python_ver_info_s:
                 python_ver_info = python_ver_info_s.group(1).decode()
-                matches = [f'PyInstaller, {python_ver_info}']
+                matches = [f"PyInstaller, {python_ver_info}"]
             else:
-                matches = ['PyInstaller, unknown python version']
+                matches = ["PyInstaller, unknown python version"]
             return matches
 
         return None
 
     def get_resource_type_dict(self):
         resource_type_dict = {}
-        if hasattr(self.pe_file, 'DIRECTORY_ENTRY_RESOURCE'):
+        if hasattr(self.pe_file, "DIRECTORY_ENTRY_RESOURCE"):
             icon_type_id_list = [
-                pefile.RESOURCE_TYPE['RT_ICON'],
-                pefile.RESOURCE_TYPE['RT_GROUP_ICON']
+                pefile.RESOURCE_TYPE["RT_ICON"],
+                pefile.RESOURCE_TYPE["RT_GROUP_ICON"],
             ]
             for resource_entry in self.pe_file.DIRECTORY_ENTRY_RESOURCE.entries:
                 resource_entry_id = resource_entry.id
                 resource_entry_name = resource_entry.name
                 if resource_entry_name:
-                    resource_entry_info = f'{resource_entry_id}:{resource_entry_name}'
+                    resource_entry_info = f"{resource_entry_id}:{resource_entry_name}"
                 else:
-                    resource_entry_info = f'{resource_entry_id}'
+                    resource_entry_info = f"{resource_entry_id}"
                 for d_entry in resource_entry.directory.entries:
                     d_entry_id = d_entry.id
                     d_entry_name = d_entry.name
                     if d_entry_name:
-                        d_entry_info = f'{d_entry_id}:{d_entry_name}'
+                        d_entry_info = f"{d_entry_id}:{d_entry_name}"
                     else:
-                        d_entry_info = f'{d_entry_id}'
+                        d_entry_info = f"{d_entry_id}"
                     for dd_entry in d_entry.directory.entries:
                         dd_entry_id = dd_entry.id
                         dd_entry_name = dd_entry.name
                         if dd_entry_name:
-                            dd_entry_info = f'{dd_entry_id}:{dd_entry_name}'
+                            dd_entry_info = f"{dd_entry_id}:{dd_entry_name}"
                         else:
-                            dd_entry_info = f'{dd_entry_id}'
+                            dd_entry_info = f"{dd_entry_id}"
 
-                        key = f'{resource_entry_info}_{d_entry_info}_{dd_entry_info}'
+                        key = f"{resource_entry_info}_{d_entry_info}_{dd_entry_info}"
 
                         data_rva = dd_entry.data.struct.OffsetToData
                         size = dd_entry.data.struct.Size
-                        data = self.pe_file.get_memory_mapped_image()[data_rva:data_rva+size]
-                        data_type, possible_extension_names = self.file_analyzer.guess_type_and_ext(data)
+                        data = self.pe_file.get_memory_mapped_image()[
+                            data_rva : data_rva + size
+                        ]
+                        (
+                            data_type,
+                            possible_extension_names,
+                        ) = self.file_analyzer.guess_type_and_ext(data)
                         if (
-                            data_type == 'data'
+                            data_type == "data"
                             and not possible_extension_names
                             and resource_entry_id in icon_type_id_list
                         ):
-                            data_type = 'icon'
-                            possible_extension_names = ['.ico']
+                            data_type = "icon"
+                            possible_extension_names = [".ico"]
                         resource_type_dict[key] = [data_type, possible_extension_names]
         return resource_type_dict
 
@@ -168,7 +183,7 @@ class PeAnalyzer:
         security_entry = self.pe_file.OPTIONAL_HEADER.DATA_DIRECTORY[security_index]
         if not security_entry.Size or not security_entry.VirtualAddress:
             return
-        with open(self.file_analyzer.file_path, 'rb') as f:
+        with open(self.file_analyzer.file_path, "rb") as f:
             try:
                 pe = SignedPEFile(f)
                 for signed_data in pe.signed_datas:
@@ -177,27 +192,30 @@ class PeAnalyzer:
                     signer_issuer_dn = signer_info.issuer.dn
                     cert = None
                     for tmp_cert in signed_data.certificates:
-                        if tmp_cert.serial_number == signer_serial_number and tmp_cert.issuer.dn == signer_issuer_dn:
+                        if (
+                            tmp_cert.serial_number == signer_serial_number
+                            and tmp_cert.issuer.dn == signer_issuer_dn
+                        ):
                             cert = tmp_cert
                             break
                     if cert:
                         cert_info = {}
-                        cert_info['subject'] = cert.subject.dn
-                        cert_info['issuer'] = cert.issuer.dn
-                        cert_info['serial_number'] = cert.serial_number
-                        cert_info['signing_time'] = signer_info.signing_time
-                        cert_info['valid_from'] = cert.valid_from
-                        cert_info['valid_to'] = cert.valid_to
+                        cert_info["subject"] = cert.subject.dn
+                        cert_info["issuer"] = cert.issuer.dn
+                        cert_info["serial_number"] = cert.serial_number
+                        cert_info["signing_time"] = signer_info.signing_time
+                        cert_info["valid_from"] = cert.valid_from
+                        cert_info["valid_to"] = cert.valid_to
 
                         try:
                             signed_data.verify()
-                            cert_info['verify_result'] = 'valid'
+                            cert_info["verify_result"] = "valid"
                         except Exception as e:
-                            cert_info['verify_result'] = 'invalid: {}'.format(e)
+                            cert_info["verify_result"] = "invalid: {}".format(e)
                         cert_info_list.append(cert_info)
             except Exception as e:
-                log.error('Error while parsing:')
-                log.error('{}'.format(e))
+                log.error("Error while parsing:")
+                log.error("{}".format(e))
         return cert_info_list
 
     def pe_size_scan(self):
@@ -207,7 +225,9 @@ class PeAnalyzer:
         """
         pe_size = self.get_pe_size()
         if pe_size and self.file_analyzer.file_size != pe_size:
-            log.warning(f'pe weird size: file_size {self.file_analyzer.file_size}({hex(self.file_analyzer.file_size)}), pe_size {pe_size}({hex(pe_size)})')
+            log.warning(
+                f"pe weird size: file_size {self.file_analyzer.file_size}({hex(self.file_analyzer.file_size)}), pe_size {pe_size}({hex(pe_size)})"
+            )
 
     def compile_time_scan(self):
         """
@@ -215,7 +235,7 @@ class PeAnalyzer:
         """
         time_str = self.get_compile_time()
         if time_str:
-            log.info('compile time: {}'.format(time_str))
+            log.info("compile time: {}".format(time_str))
 
     def pdb_scan(self):
         """
@@ -223,7 +243,7 @@ class PeAnalyzer:
         """
         pdb_path = self.get_pdb_path()
         if pdb_path:
-            log.info('pdb path: {}'.format(pdb_path))
+            log.info("pdb path: {}".format(pdb_path))
 
     def versioninfo_scan(self):
         """
@@ -231,9 +251,9 @@ class PeAnalyzer:
         """
         versioninfo = self.get_versioninfo()
         if versioninfo:
-            log.info('versioninfo:')
+            log.info("versioninfo:")
             for item in versioninfo:
-                log.info('    "{}": "{}"'.format(item['name'], item['value']))
+                log.info('    "{}": "{}"'.format(item["name"], item["value"]))
 
     def section_name_scan(self):
         """
@@ -241,8 +261,8 @@ class PeAnalyzer:
         """
         section_names = []
         for section in self.pe_file.sections:
-            section_names.append(section.Name.strip(b'\x00'))
-        log.info(f'section names: {section_names}')
+            section_names.append(section.Name.strip(b"\x00"))
+        log.info(f"section names: {section_names}")
 
     def packer_scan(self):
         """
@@ -251,7 +271,7 @@ class PeAnalyzer:
         matches = self.get_packer_result()
         if matches:
             self.file_analyzer.packer_list.extend(matches)
-            log.info('packer: {}'.format(matches))
+            log.info("packer: {}".format(matches))
 
     def cert_scan(self):
         """
@@ -259,22 +279,24 @@ class PeAnalyzer:
         """
         cert_info_list = self.verify_cert()
         if cert_info_list:
-            log.info('contains certificates:')
+            log.info("contains certificates:")
             for cert_info in cert_info_list:
-                log.info('   Subject: {}'.format(cert_info.get('subject', '')))
-                log.info('   Issuer: {}'.format(cert_info.get('issuer', '')))
-                log.info('   Serial number: {}'.format(cert_info.get('serial_number', '')))
+                log.info("   Subject: {}".format(cert_info.get("subject", "")))
+                log.info("   Issuer: {}".format(cert_info.get("issuer", "")))
+                log.info(
+                    "   Serial number: {}".format(cert_info.get("serial_number", ""))
+                )
                 # TODO signify的signing_time大概率获取不到，暂时判断有值再输出
-                signing_time = cert_info.get('signing_time', '')
+                signing_time = cert_info.get("signing_time", "")
                 if signing_time:
-                    log.info('   signing time: {}'.format(signing_time))
-                log.info('   Valid from: {}'.format(cert_info.get('valid_from', '')))
-                log.info('   Valid to: {}'.format(cert_info.get('valid_to', '')))
-                verify_result = cert_info.get('verify_result', '')
-                if verify_result == 'valid':
-                    log.info('   Verify result: {}'.format(verify_result))
+                    log.info("   signing time: {}".format(signing_time))
+                log.info("   Valid from: {}".format(cert_info.get("valid_from", "")))
+                log.info("   Valid to: {}".format(cert_info.get("valid_to", "")))
+                verify_result = cert_info.get("verify_result", "")
+                if verify_result == "valid":
+                    log.info("   Verify result: {}".format(verify_result))
                 else:
-                    log.warning('   Verify result: {}'.format(verify_result))
+                    log.warning("   Verify result: {}".format(verify_result))
 
     def resource_scan(self):
         """
@@ -286,12 +308,12 @@ class PeAnalyzer:
         for data_type, possible_extension_names in resource_type_dict.values():
             for possible_extension_name in possible_extension_names:
                 resource_type_set.add(possible_extension_name)
-                if possible_extension_name in ['.exe', '.dll', '.sys']:
+                if possible_extension_name in [".exe", ".dll", ".sys"]:
                     weird_resource_type_set.add(possible_extension_name)
         self.file_analyzer.pe_resource_type_list = list(resource_type_set)
         weird_resource_type_list = list(weird_resource_type_set)
         if weird_resource_type_list:
-            log.warning(f'pe weird resource type: {weird_resource_type_list}')
+            log.warning(f"pe weird resource type: {weird_resource_type_list}")
 
     def run(self):
         self.pe_size_scan()
