@@ -113,6 +113,7 @@ class UrlAnalyzer:
             ".png",
             ".gif",
             ".ico",
+            ".svg",
             ".pdf",
             ".doc",
             ".docx",
