@@ -46,7 +46,7 @@ sudo apt-get install libmagic1
 
 ## 使用帮助
 ```r
-usage: xanalyzer [-h] (-f FILE [FILE ...] | -u URL | --version) [-s]
+usage: xanalyzer [-h] (-f FILE [FILE ...] | -u URL | --version) [-s] [--deep]
 
 Process some files and urls.
 
@@ -57,6 +57,7 @@ optional arguments:
   -u URL, --url URL     analyze the url
   --version             print version info
   -s, --save            save log and data
+  --deep                analyze deeply
 ```
 
 ## 使用示例

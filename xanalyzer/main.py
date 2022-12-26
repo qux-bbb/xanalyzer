@@ -22,6 +22,7 @@ def main():
     group.add_argument("-u", "--url", help="analyze the url")
     group.add_argument("--version", action="store_true", help="print version info")
     parser.add_argument("-s", "--save", action="store_true", help="save log and data")
+    parser.add_argument("--deep", action="store_true", help="analyze deeply")
     args = parser.parse_args()
 
     if args.version:
@@ -32,6 +33,8 @@ def main():
     init_log()
 
     log.info("=" * 80)
+
+    deep_flag = args.deep
 
     if args.file:
         file_paths = []
@@ -54,7 +57,7 @@ def main():
             log.info("-" * 80)
     if args.url:
         log.info("processing {}".format(args.url))
-        url_analyzer = UrlAnalyzer(args.url)
+        url_analyzer = UrlAnalyzer(args.url, deep_flag)
         url_analyzer.run()
         log.info("-" * 80)
 

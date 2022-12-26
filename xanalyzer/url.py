@@ -19,8 +19,9 @@ class UrlAnalyzer:
     basic_domain = None
     subdomain_list = []
 
-    def __init__(self, url):
+    def __init__(self, url, deep_flag):
         self.url = url
+        self.deep_flag = deep_flag
         self.parsed_url = urlparse(url)
         self.hostname = self.parsed_url.hostname
         self.main_url = f"{self.parsed_url.scheme}://{self.hostname}"
@@ -141,6 +142,7 @@ class UrlAnalyzer:
         links_to_req = [self.main_url]
 
         for link in links_to_req:
+            log.info(f"request: {link}")
             try:
                 res = requests.get(link, headers=headers)
             except Exception as e:
@@ -195,4 +197,5 @@ class UrlAnalyzer:
 
     def run(self):
         self.basic_scan()
-        self.link_and_subdomain_scan()
+        if self.deep_flag:
+            self.link_and_subdomain_scan()
