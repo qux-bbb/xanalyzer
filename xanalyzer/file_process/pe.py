@@ -75,16 +75,19 @@ class PeAnalyzer:
                                 versioninfo.append(entry)
                     elif hasattr(entry, "Var"):
                         for var_entry in entry.Var:
-                            if hasattr(var_entry, "entry"):
-                                entry = {}
-                                entry["name"] = list(var_entry.entry.keys())[0].decode()
-                                entry["value"] = list(var_entry.entry.values())[0]
-                                if (
-                                    entry["name"] == b"Translation"
-                                    and len(entry["value"]) == 10
-                                ):
-                                    entry["value"] = f"0x0{entry['value'][2:5]} 0x0{entry['value'][7:10]}"
-                                versioninfo.append(entry)
+                            if not hasattr(var_entry, "entry"):
+                                continue
+                            entry = {}
+                            entry["name"] = list(var_entry.entry.keys())[0].decode()
+                            entry["value"] = list(var_entry.entry.values())[0]
+                            if (
+                                entry["name"] == b"Translation"
+                                and len(entry["value"]) == 10
+                            ):
+                                entry[
+                                    "value"
+                                ] = f"0x0{entry['value'][2:5]} 0x0{entry['value'][7:10]}"
+                            versioninfo.append(entry)
                 except Exception as e:
                     log.error(e, exc_info=True)
                     continue
@@ -127,52 +130,54 @@ class PeAnalyzer:
 
     def get_resource_type_dict(self):
         resource_type_dict = {}
-        if hasattr(self.pe_file, "DIRECTORY_ENTRY_RESOURCE"):
-            icon_type_id_list = [
-                pefile.RESOURCE_TYPE["RT_ICON"],
-                pefile.RESOURCE_TYPE["RT_GROUP_ICON"],
-            ]
-            for resource_entry in self.pe_file.DIRECTORY_ENTRY_RESOURCE.entries:
-                resource_entry_id = resource_entry.id
-                resource_entry_name = resource_entry.name
-                if resource_entry_name:
-                    resource_entry_info = f"{resource_entry_id}:{resource_entry_name}"
+        if not hasattr(self.pe_file, "DIRECTORY_ENTRY_RESOURCE"):
+            return resource_type_dict
+
+        icon_type_id_list = [
+            pefile.RESOURCE_TYPE["RT_ICON"],
+            pefile.RESOURCE_TYPE["RT_GROUP_ICON"],
+        ]
+        for resource_entry in self.pe_file.DIRECTORY_ENTRY_RESOURCE.entries:
+            resource_entry_id = resource_entry.id
+            resource_entry_name = resource_entry.name
+            if resource_entry_name:
+                resource_entry_info = f"{resource_entry_id}:{resource_entry_name}"
+            else:
+                resource_entry_info = f"{resource_entry_id}"
+            for d_entry in resource_entry.directory.entries:
+                d_entry_id = d_entry.id
+                d_entry_name = d_entry.name
+                if d_entry_name:
+                    d_entry_info = f"{d_entry_id}:{d_entry_name}"
                 else:
-                    resource_entry_info = f"{resource_entry_id}"
-                for d_entry in resource_entry.directory.entries:
-                    d_entry_id = d_entry.id
-                    d_entry_name = d_entry.name
-                    if d_entry_name:
-                        d_entry_info = f"{d_entry_id}:{d_entry_name}"
+                    d_entry_info = f"{d_entry_id}"
+                for dd_entry in d_entry.directory.entries:
+                    dd_entry_id = dd_entry.id
+                    dd_entry_name = dd_entry.name
+                    if dd_entry_name:
+                        dd_entry_info = f"{dd_entry_id}:{dd_entry_name}"
                     else:
-                        d_entry_info = f"{d_entry_id}"
-                    for dd_entry in d_entry.directory.entries:
-                        dd_entry_id = dd_entry.id
-                        dd_entry_name = dd_entry.name
-                        if dd_entry_name:
-                            dd_entry_info = f"{dd_entry_id}:{dd_entry_name}"
-                        else:
-                            dd_entry_info = f"{dd_entry_id}"
+                        dd_entry_info = f"{dd_entry_id}"
 
-                        key = f"{resource_entry_info}_{d_entry_info}_{dd_entry_info}"
+                    key = f"{resource_entry_info}_{d_entry_info}_{dd_entry_info}"
 
-                        data_rva = dd_entry.data.struct.OffsetToData
-                        size = dd_entry.data.struct.Size
-                        data = self.pe_file.get_memory_mapped_image()[
-                            data_rva : data_rva + size
-                        ]
-                        (
-                            data_type,
-                            possible_extension_names,
-                        ) = self.file_analyzer.guess_type_and_ext(data)
-                        if (
-                            data_type == "data"
-                            and not possible_extension_names
-                            and resource_entry_id in icon_type_id_list
-                        ):
-                            data_type = "icon"
-                            possible_extension_names = [".ico"]
-                        resource_type_dict[key] = [data_type, possible_extension_names]
+                    data_rva = dd_entry.data.struct.OffsetToData
+                    size = dd_entry.data.struct.Size
+                    data = self.pe_file.get_memory_mapped_image()[
+                        data_rva : data_rva + size
+                    ]
+                    (
+                        data_type,
+                        possible_extension_names,
+                    ) = self.file_analyzer.guess_type_and_ext(data)
+                    if (
+                        data_type == "data"
+                        and not possible_extension_names
+                        and resource_entry_id in icon_type_id_list
+                    ):
+                        data_type = "icon"
+                        possible_extension_names = [".ico"]
+                    resource_type_dict[key] = [data_type, possible_extension_names]
         return resource_type_dict
 
     def verify_cert(self):
@@ -183,39 +188,42 @@ class PeAnalyzer:
         security_entry = self.pe_file.OPTIONAL_HEADER.DATA_DIRECTORY[security_index]
         if not security_entry.Size or not security_entry.VirtualAddress:
             return
-        with open(self.file_analyzer.file_path, "rb") as f:
-            try:
-                pe = SignedPEFile(f)
-                for signed_data in pe.signed_datas:
-                    signer_info = signed_data.signer_info
-                    signer_serial_number = signer_info.serial_number._value
-                    signer_issuer_dn = signer_info.issuer.dn
-                    cert = None
-                    for tmp_cert in signed_data.certificates:
-                        if (
-                            tmp_cert.serial_number == signer_serial_number
-                            and tmp_cert.issuer.dn == signer_issuer_dn
-                        ):
-                            cert = tmp_cert
-                            break
-                    if cert:
-                        cert_info = {}
-                        cert_info["subject"] = cert.subject.dn
-                        cert_info["issuer"] = cert.issuer.dn
-                        cert_info["serial_number"] = cert.serial_number
-                        cert_info["signing_time"] = signer_info.signing_time
-                        cert_info["valid_from"] = cert.valid_from
-                        cert_info["valid_to"] = cert.valid_to
+        pe_file = open(self.file_analyzer.file_path, "rb")
+        try:
+            pe = SignedPEFile(pe_file)
+            for signed_data in pe.signed_datas:
+                signer_info = signed_data.signer_info
+                signer_serial_number = signer_info.serial_number._value
+                signer_issuer_dn = signer_info.issuer.dn
+                cert = None
+                for tmp_cert in signed_data.certificates:
+                    if (
+                        tmp_cert.serial_number == signer_serial_number
+                        and tmp_cert.issuer.dn == signer_issuer_dn
+                    ):
+                        cert = tmp_cert
+                        break
+                if not cert:
+                    continue
+                
+                cert_info = {}
+                cert_info["subject"] = cert.subject.dn
+                cert_info["issuer"] = cert.issuer.dn
+                cert_info["serial_number"] = cert.serial_number
+                cert_info["signing_time"] = signer_info.signing_time
+                cert_info["valid_from"] = cert.valid_from
+                cert_info["valid_to"] = cert.valid_to
 
-                        try:
-                            signed_data.verify()
-                            cert_info["verify_result"] = "valid"
-                        except Exception as e:
-                            cert_info["verify_result"] = "invalid: {}".format(e)
-                        cert_info_list.append(cert_info)
-            except Exception as e:
-                log.error("Error while parsing:")
-                log.error("{}".format(e))
+                try:
+                    signed_data.verify()
+                    cert_info["verify_result"] = "valid"
+                except Exception as e:
+                    cert_info["verify_result"] = "invalid: {}".format(e)
+                cert_info_list.append(cert_info)
+        except Exception as e:
+            log.error("Error while parsing:")
+            log.error("{}".format(e))
+        pe_file.close()
         return cert_info_list
 
     def pe_size_scan(self):
