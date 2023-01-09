@@ -110,6 +110,15 @@ class PeAnalyzer:
         matches = signatures.match(self.pe_file, ep_only=True)
 
         if matches:
+            for i in range(len(matches)):
+                if matches[i].startswith("UPX"):
+                    the_file = open(self.file_analyzer.file_path, "rb")
+                    file_content = the_file.read()
+                    the_file.close()
+                    upx_ver_s = re.search(rb"(\d+\.\d+)\x00UPX!", file_content)
+                    if upx_ver_s:
+                        matches[i] = f"UPX {upx_ver_s.group(1).decode()}"
+                    break
             return matches
 
         the_file = open(self.file_analyzer.file_path, "rb")
@@ -205,7 +214,7 @@ class PeAnalyzer:
                         break
                 if not cert:
                     continue
-                
+
                 cert_info = {}
                 cert_info["subject"] = cert.subject.dn
                 cert_info["issuer"] = cert.issuer.dn

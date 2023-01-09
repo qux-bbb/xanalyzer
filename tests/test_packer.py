@@ -11,9 +11,7 @@ def test_exe_upx_packer():
     file_analyzer = FileAnalyzer(upxed_path)
     pe_analyzer = PeAnalyzer(file_analyzer)
     matches = pe_analyzer.get_packer_result()
-    assert matches == [
-        "UPX 2.90 [LZMA] -> Markus Oberhumer, Laszlo Molnar & John Reiser"
-    ]
+    assert matches == ["UPX 3.96"]
 
 
 def test_elf_upx_packer():
