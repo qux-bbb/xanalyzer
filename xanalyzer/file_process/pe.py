@@ -304,6 +304,7 @@ class PeAnalyzer:
                     "   Serial number: {}".format(cert_info.get("serial_number", ""))
                 )
                 # TODO signify的signing_time大概率获取不到，暂时判断有值再输出
+                # 可使用该文件测试 tests/test_data/java.exe_
                 signing_time = cert_info.get("signing_time", "")
                 if signing_time:
                     log.info("   signing time: {}".format(signing_time))
