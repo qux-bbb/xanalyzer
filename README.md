@@ -3,7 +3,7 @@
 静态分析文件和url，python3下运行。  
 
 1. 文件
-    - md5
+    - md5/sha256
     - 文件类型
     - 文件大小
     - 字符串扫描
@@ -17,13 +17,14 @@
         - 查壳
         - 资源段扫描
     - ELF文件
+        - ELF大小
         - 查壳
     - 建议使用的工具
 2. url(website)
     - 域名解析ip
     - 获取robots.txt文件
-    - 站内链接扫描
-    - 站内子域名扫描
+    - 站内链接扫描(--deep)
+    - 站内子域名扫描(--deep)
 
 ## 安装
 方法1 - 使用pipx安装：  
@@ -78,6 +79,10 @@ python setup.py develop
 
 ## 打包发布
 该步骤仅本人使用  
+
+打包前确保版本号和CHANGELOG.md已更新  
+
+安装依赖并打包：  
 ```r
 pip install -r requirements.my.txt
 python setup.py sdist bdist_wheel
