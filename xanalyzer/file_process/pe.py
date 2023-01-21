@@ -307,7 +307,9 @@ class PeAnalyzer:
                 # 可使用该文件测试 tests/test_data/java.exe_
                 signing_time = cert_info.get("signing_time", "")
                 if signing_time:
-                    log.info("   signing time: {}".format(signing_time))
+                    log.info("    Signing time: {}".format(signing_time))
+                else:
+                    log.warning("    Can not get signing time, please view it manually")
                 log.info("   Valid from: {}".format(cert_info.get("valid_from", "")))
                 log.info("   Valid to: {}".format(cert_info.get("valid_to", "")))
                 verify_result = cert_info.get("verify_result", "")
