@@ -298,10 +298,10 @@ class PeAnalyzer:
         if cert_info_list:
             log.info("contains certificates:")
             for cert_info in cert_info_list:
-                log.info("   Subject: {}".format(cert_info.get("subject", "")))
-                log.info("   Issuer: {}".format(cert_info.get("issuer", "")))
+                log.info("    Subject: {}".format(cert_info.get("subject", "")))
+                log.info("    Issuer: {}".format(cert_info.get("issuer", "")))
                 log.info(
-                    "   Serial number: {}".format(cert_info.get("serial_number", ""))
+                    "    Serial number: {}".format(cert_info.get("serial_number", ""))
                 )
                 # TODO signify的signing_time大概率获取不到，暂时判断有值再输出
                 # 可使用该文件测试 tests/test_data/java.exe_
@@ -310,13 +310,13 @@ class PeAnalyzer:
                     log.info("    Signing time: {}".format(signing_time))
                 else:
                     log.warning("    Can not get signing time, please view it manually")
-                log.info("   Valid from: {}".format(cert_info.get("valid_from", "")))
-                log.info("   Valid to: {}".format(cert_info.get("valid_to", "")))
+                log.info("    Valid from: {}".format(cert_info.get("valid_from", "")))
+                log.info("    Valid to: {}".format(cert_info.get("valid_to", "")))
                 verify_result = cert_info.get("verify_result", "")
                 if verify_result == "valid":
-                    log.info("   Verify result: {}".format(verify_result))
+                    log.info("    Verify result: {}".format(verify_result))
                 else:
-                    log.warning("   Verify result: {}".format(verify_result))
+                    log.warning("    Verify result: {}".format(verify_result))
 
     def resource_scan(self):
         """
