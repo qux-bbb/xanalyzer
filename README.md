@@ -30,6 +30,8 @@
 方法1 - 使用pipx安装：  
 ```r
 pipx install xanalyzer
+# 还可以用来升级，但是不能检查升级
+pipx upgrade xanalyzer
 ```
 pipx: https://pypa.github.io/pipx/  
 
@@ -66,7 +68,7 @@ optional arguments:
 xanalyzer -f hello.exe
 xanalyzer -u "https://www.baidu.com/s?wd=hello"
 ```
-    
+
 ## 开发
 ```r
 git clone https://github.com/qux-bbb/xanalyzer
