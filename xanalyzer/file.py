@@ -1,3 +1,4 @@
+import io
 import os
 import re
 import json
@@ -34,7 +35,8 @@ class FileAnalyzer:
         the_file_type = magic.from_buffer(the_content)
         the_ext = []
         if the_file_type.startswith("Zip archive data"):
-            the_zip = ZipFile(self.file_path)
+            the_file = io.BytesIO(the_content)
+            the_zip = ZipFile(the_file)
             zip_namelist = the_zip.namelist()
             the_zip.close()
             if "AndroidManifest.xml" in zip_namelist:
