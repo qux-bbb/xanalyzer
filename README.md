@@ -82,7 +82,7 @@ python setup.py develop
 ## 打包发布
 该步骤仅本人使用  
 
-打包前确保版本号和CHANGELOG.md已更新  
+打包前确保版本号和CHANGELOG.md已更新，清空dist文件夹  
 
 安装依赖并打包：  
 ```r
