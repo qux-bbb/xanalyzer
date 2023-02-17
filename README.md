@@ -1,6 +1,8 @@
 # xanalyzer
 
-静态分析文件和url，python3下运行。  
+[English](README-en.md)  
+
+简单分析文件和url，python3下运行。  
 
 1. 文件
     - md5/sha256
@@ -30,7 +32,7 @@
 方法1 - 使用pipx安装：  
 ```r
 pipx install xanalyzer
-# 还可以用来升级，但是不能检查升级
+# 还可以用来升级，但是不能检查新版本
 pipx upgrade xanalyzer
 ```
 pipx: https://pypa.github.io/pipx/  
