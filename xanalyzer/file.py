@@ -119,6 +119,10 @@ class FileAnalyzer:
             the_ext = [".pcap"]
         elif the_file_type.startswith("pcap-ng capture file"):
             the_ext = [".pcapng"]
+        elif the_file_type.startswith(
+            ("Bourne-Again shell script", "POSIX shell script")
+        ):
+            the_ext = [".sh"]
 
         return the_file_type, the_ext
 

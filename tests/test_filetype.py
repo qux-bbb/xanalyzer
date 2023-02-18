@@ -79,6 +79,9 @@ def test_many_filetypes():
         # 流量包文件
         "http.pcap_",
         "http.pcapng_",
+        # linux shell 脚本文件
+        "hello_bash.sh_",
+        "hello_sh.sh_",
     ]
     for filename in filenames:
         expect_ext = ["." + filename[:-1].split(".")[1]]
