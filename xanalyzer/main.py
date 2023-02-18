@@ -8,6 +8,27 @@ from xanalyzer.utils import log, init_log
 from xanalyzer.config import Config
 
 
+file_path_list = []
+
+
+def get_all_path(the_path):
+    """获取所有路径，深度优先
+
+    Args:
+        the_path (string): 一个路径
+    """
+    if os.path.isfile(the_path):
+        file_path_list.append(the_path)
+        return
+
+    a_path = None
+    for a_path in Path(the_path).iterdir():
+        get_all_path(a_path)
+
+    if not a_path:  # 空文件夹，提示一下
+        log.warning(f"folder is empty: {the_path}")
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="xanalyzer", description="Process some files and urls."
@@ -37,20 +58,12 @@ def main():
     deep_flag = args.deep
 
     if args.file:
-        file_paths = []
         for the_path in args.file:
             if not os.path.exists(the_path):
                 log.warning("{} does not exist!!!".format(the_path))
                 continue
-            if os.path.isdir(the_path):
-                for a_path in Path(the_path).iterdir():
-                    if not a_path.is_file():
-                        log.warning(f"{a_path} is not a file, will be ignored")
-                        continue
-                    file_paths.append(str(a_path))
-            else:
-                file_paths.append(the_path)
-        for file_path in file_paths:
+            get_all_path(the_path)
+        for file_path in file_path_list:
             log.info("processing {}".format(file_path))
             file_analyzer = FileAnalyzer(file_path)
             file_analyzer.run()
