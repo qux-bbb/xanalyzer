@@ -2,7 +2,7 @@
 
 [English](README-en.md)  
 
-简单分析文件和url，python3下运行。  
+简单分析文件和url，python3.7.9下运行。  
 
 1. 文件
     - md5/sha256
