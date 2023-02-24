@@ -2,7 +2,7 @@
 
 [简体中文](README.md)  
 
-Simply analyze file and url, python3.7.9 is required.  
+Simply analyze file and url, python3 is required.  
 
 1. file
     - md5/sha256
@@ -29,20 +29,13 @@ Simply analyze file and url, python3.7.9 is required.
     - site subdomain scan(--deep)
 
 ## Install
-Method1 - install by pipx：  
+Install by pipx：  
 ```r
 pipx install xanalyzer
 # Upgrade by pipx, but can not check new version
 pipx upgrade xanalyzer
 ```
 pipx: https://pypa.github.io/pipx/  
-
-Method2 - install from source：  
-```r
-git clone https://github.com/qux-bbb/xanalyzer
-cd xanalyzer
-python setup.py install
-```
 
 If your OS is Debian/Ubuntu, you need to install dependency：  
 ```r

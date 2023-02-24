@@ -2,7 +2,7 @@
 
 [English](README-en.md)  
 
-简单分析文件和url，python3.7.9下运行。  
+简单分析文件和url，python3下运行。  
 
 1. 文件
     - md5/sha256
@@ -29,20 +29,13 @@
     - 站内子域名扫描(--deep)
 
 ## 安装
-方法1 - 使用pipx安装：  
+使用pipx安装：  
 ```r
 pipx install xanalyzer
 # 还可以用来升级，但是不能检查新版本
 pipx upgrade xanalyzer
 ```
 pipx: https://pypa.github.io/pipx/  
-
-方法2 - 从源码安装：  
-```r
-git clone https://github.com/qux-bbb/xanalyzer
-cd xanalyzer
-python setup.py install
-```
 
 如果系统是 Debian/Ubuntu，需要安装依赖：  
 ```r
