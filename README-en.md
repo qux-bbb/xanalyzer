@@ -31,11 +31,13 @@ Simply analyze file and url, python3 is required.
 ## Install
 Install by pipx：  
 ```r
+# pipx: https://pypa.github.io/pipx/  
+pip install pipx
+pipx ensurepath
 pipx install xanalyzer
 # Upgrade by pipx, but can not check new version
 pipx upgrade xanalyzer
 ```
-pipx: https://pypa.github.io/pipx/  
 
 If your OS is Debian/Ubuntu, you need to install dependency：  
 ```r

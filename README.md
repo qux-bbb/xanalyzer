@@ -31,11 +31,13 @@
 ## 安装
 使用pipx安装：  
 ```r
+# pipx: https://pypa.github.io/pipx/  
+pip install pipx
+pipx ensurepath
 pipx install xanalyzer
 # 还可以用来升级，但是不能检查新版本
 pipx upgrade xanalyzer
 ```
-pipx: https://pypa.github.io/pipx/  
 
 如果系统是 Debian/Ubuntu，需要安装依赖：  
 ```r
