@@ -114,3 +114,6 @@ https://github.com/mitre/multiscanner
 - python打包: https://www.jianshu.com/p/692bab7f8e07
 - setuptools官方文档:  https://setuptools.readthedocs.io/en/latest/index.html
 - PEiD查壳: https://github.com/erocarrera/pefile/blob/wiki/PEiDSignatures.md
+
+## 问题
+部分UPX壳识别不了，比如: d32e87c4b81738b45db582db8293293096637f5d50af7dd5d9a0162a0747498a  
