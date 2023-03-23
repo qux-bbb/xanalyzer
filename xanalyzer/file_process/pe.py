@@ -281,6 +281,14 @@ class PeAnalyzer:
             section_names.append(section.Name.strip(b"\x00"))
         log.info(f"section names: {section_names}")
 
+    def dll_name_scan(self):
+        """
+        如果是dll，尝试输出dll名称
+        """
+        if self.file_analyzer.possible_extension_names == [".dll"]:
+            dll_name = self.pe_file.DIRECTORY_ENTRY_EXPORT.name
+            log.info(f"dll name: {dll_name}")
+
     def packer_scan(self):
         """
         查壳
@@ -342,5 +350,6 @@ class PeAnalyzer:
         self.versioninfo_scan()
         self.cert_scan()
         self.section_name_scan()
+        self.dll_name_scan()
         self.packer_scan()
         self.resource_scan()
