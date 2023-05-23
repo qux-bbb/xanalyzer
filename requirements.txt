@@ -2,6 +2,6 @@ python-magic-bin==0.4.14;platform_system=="Windows"
 python-magic==0.4.27;platform_system=="Linux"
 signify==0.4.0
 pefile==2021.9.3
-requests==2.28.1
+requests==2.31.0
 coloredlogs==15.0.1
 pyelftools==0.28
