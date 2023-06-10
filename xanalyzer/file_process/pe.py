@@ -105,6 +105,13 @@ class PeAnalyzer:
                 return debug_entry.entry.PdbFileName.strip(b"\x00").decode("utf8")
         return
 
+    def get_dll_name(self):
+        if self.file_analyzer.possible_extension_names != [".dll"]:
+            return
+        if hasattr(self.pe_file, "DIRECTORY_ENTRY_EXPORT"):
+            return self.pe_file.DIRECTORY_ENTRY_EXPORT.name
+        return
+
     def get_packer_result(self):
         signatures = peutils.SignatureDatabase(Config.peid_signature_path)
         matches = signatures.match(self.pe_file, ep_only=True)
@@ -285,8 +292,8 @@ class PeAnalyzer:
         """
         如果是dll，尝试输出dll名称
         """
-        if self.file_analyzer.possible_extension_names == [".dll"]:
-            dll_name = self.pe_file.DIRECTORY_ENTRY_EXPORT.name
+        dll_name = self.get_dll_name()
+        if dll_name:
             log.info(f"dll name: {dll_name}")
 
     def packer_scan(self):
