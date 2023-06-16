@@ -116,6 +116,13 @@ class PeAnalyzer:
         signatures = peutils.SignatureDatabase(Config.peid_signature_path)
         matches = signatures.match(self.pe_file, ep_only=True)
 
+        if not matches:
+            yara_matches = self.file_analyzer.packer_yara_match()
+            if yara_matches:
+                matches = []
+                for yara_match in yara_matches:
+                    matches.append(yara_match.rule)
+
         if matches:
             for i in range(len(matches)):
                 if matches[i].startswith("UPX"):

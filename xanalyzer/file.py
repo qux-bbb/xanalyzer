@@ -3,6 +3,7 @@ import os
 import re
 import json
 import magic
+import yara
 from pathlib import Path
 from hashlib import md5, sha256
 from zipfile import ZipFile
@@ -14,6 +15,8 @@ from xanalyzer.config import Config
 
 
 class FileAnalyzer:
+    packer_yara_rules = None
+
     def __init__(self, file_path):
         self.file_path = file_path
         self.file_size = os.path.getsize(self.file_path)
@@ -25,6 +28,24 @@ class FileAnalyzer:
         )
         self.packer_list = []
         self.pe_resource_type_list = []
+
+        self.init_packer_yara_rules()
+
+    @classmethod
+    def init_packer_yara_rules(cls):
+        if cls.packer_yara_rules:
+            return
+        yara_filenames = os.listdir(Config.packer_yara_rules_path)
+        yara_dict = {}
+        for yara_filename in yara_filenames:
+            yara_path = os.path.join(
+                Config.packer_yara_rules_path, yara_filename
+            )
+            yara_dict[yara_filename] = yara_path
+        cls.packer_yara_rules = yara.compile(filepaths=yara_dict)
+
+    def packer_yara_match(self):
+        return self.packer_yara_rules.match(str(self.file_path))
 
     def guess_type_and_ext(self, the_content):
         """

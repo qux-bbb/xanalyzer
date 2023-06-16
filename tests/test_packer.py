@@ -14,6 +14,18 @@ def test_exe_upx_packer():
     assert matches == ["UPX 3.96"]
 
 
+def test_common_exe_upx_packer():
+    upxed_path = (
+        cur_dir_path
+        / "test_data"
+        / "d32e87c4b81738b45db582db8293293096637f5d50af7dd5d9a0162a0747498a_blackmoon_common_upx"
+    )
+    file_analyzer = FileAnalyzer(upxed_path)
+    pe_analyzer = PeAnalyzer(file_analyzer)
+    matches = pe_analyzer.get_packer_result()
+    assert matches == ["UPX 3.96"]
+
+
 def test_elf_upx_packer():
     upxed_path = cur_dir_path / "test_data" / "Hello64_elf_static_upx_"
     file_analyzer = FileAnalyzer(upxed_path)
