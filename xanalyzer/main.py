@@ -1,12 +1,11 @@
-import os
 import argparse
+import os
 from pathlib import Path
 
+from xanalyzer.config import Config
 from xanalyzer.file import FileAnalyzer
 from xanalyzer.url import UrlAnalyzer
-from xanalyzer.utils import log, init_log
-from xanalyzer.config import Config
-
+from xanalyzer.utils import init_log, log
 
 file_path_list = []
 

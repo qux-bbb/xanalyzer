@@ -1,7 +1,8 @@
 import re
+from datetime import datetime
+
 import pefile
 import peutils
-from datetime import datetime
 from signify.authenticode.signed_pe import SignedPEFile
 
 from xanalyzer.config import Config

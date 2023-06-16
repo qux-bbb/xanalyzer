@@ -1,17 +1,18 @@
 import io
+import json
 import os
 import re
-import json
-import magic
-import yara
-from pathlib import Path
 from hashlib import md5, sha256
+from pathlib import Path
 from zipfile import ZipFile
 
-from xanalyzer.utils import log
-from xanalyzer.file_process.pe import PeAnalyzer
-from xanalyzer.file_process.elf import ElfAnalyzer
+import magic
+import yara
+
 from xanalyzer.config import Config
+from xanalyzer.file_process.elf import ElfAnalyzer
+from xanalyzer.file_process.pe import PeAnalyzer
+from xanalyzer.utils import log
 
 
 class FileAnalyzer:

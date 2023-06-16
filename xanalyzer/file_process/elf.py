@@ -1,5 +1,7 @@
 import re
+
 from elftools.elf.elffile import ELFFile
+
 from xanalyzer.utils import log
 
 

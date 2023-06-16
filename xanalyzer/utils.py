@@ -1,9 +1,9 @@
-import os
 import logging
+import os
+
 import coloredlogs
 
 from xanalyzer.config import Config
-
 
 log = logging.getLogger("xanalyzer")
 

@@ -1,11 +1,12 @@
 import os
 import re
 import socket
-import requests
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urljoin, urlparse
 
-from xanalyzer.utils import log
+import requests
+
 from xanalyzer.config import Config
+from xanalyzer.utils import log
 
 
 class UrlAnalyzer:
