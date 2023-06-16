@@ -11,13 +11,22 @@ from xanalyzer.utils import log
 class PeAnalyzer:
     file_analyzer = None
     pe_file = None
+    peid_signatures = None
 
     def __init__(self, file_analyzer):
         self.file_analyzer = file_analyzer
         self.pe_file = pefile.PE(self.file_analyzer.file_path)
 
+        self.init_peid_signatures()
+
     def __del__(self):
         self.pe_file.close()
+
+    @classmethod
+    def init_peid_signatures(cls):
+        if cls.peid_signatures:
+            return
+        cls.peid_signatures = peutils.SignatureDatabase(Config.peid_signature_path)
 
     def get_pe_size(self):
         """
@@ -113,8 +122,7 @@ class PeAnalyzer:
         return
 
     def get_packer_result(self):
-        signatures = peutils.SignatureDatabase(Config.peid_signature_path)
-        matches = signatures.match(self.pe_file, ep_only=True)
+        matches = self.peid_signatures.match(self.pe_file, ep_only=True)
 
         if not matches:
             yara_matches = self.file_analyzer.packer_yara_match()
