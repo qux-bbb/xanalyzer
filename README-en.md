@@ -16,6 +16,7 @@ Simply analyze file and url, python3 is required.
         - version info
         - certificate verify
         - section name
+        - DLL name
         - packer scan
         - resource section scan
     - ELF file
