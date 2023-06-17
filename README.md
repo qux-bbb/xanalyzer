@@ -72,8 +72,11 @@ xanalyzer -u "https://www.baidu.com/s?wd=hello"
 git clone https://github.com/qux-bbb/xanalyzer
 cd xanalyzer
 virtualenv venv
+# windws使用虚拟环境: .\venv\Scripts\activate
+# linux使用虚拟环境: source venv/bin/activate
 pip install -r requirements.txt
 python setup.py develop
+# 退出虚拟环境: deactivate
 ```
 这样之后就可以用pycharm或vscode开发调试了  
 
@@ -82,10 +85,14 @@ python setup.py develop
 
 打包前确保版本号和CHANGELOG.md已更新，清空dist文件夹  
 
-安装依赖并打包：  
+安装依赖、通过测试项、打包：  
 ```r
+# windws使用虚拟环境: .\venv\Scripts\activate
+# linux使用虚拟环境: source venv/bin/activate
 pip install -r requirements.my.txt
+pytest
 python setup.py sdist bdist_wheel
+# 退出虚拟环境: deactivate
 ```
 
 重新打开一个命令行，转到dist文件夹下本地安装，检查基本功能，举例：  

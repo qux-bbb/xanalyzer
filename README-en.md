@@ -72,8 +72,11 @@ xanalyzer -u "https://www.baidu.com/s?wd=hello"
 git clone https://github.com/qux-bbb/xanalyzer
 cd xanalyzer
 virtualenv venv
+# use venv in windws: .\venv\Scripts\activate
+# use venv in linux: source venv/bin/activate
 pip install -r requirements.txt
 python setup.py develop
+# exit venv: deactivate
 ```
 Then you can develop and debug with pycharm or vscode  
 
