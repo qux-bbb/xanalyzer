@@ -8,6 +8,7 @@ setup(
     package_data={
         "xanalyzer": [
             "data/UserDB.TXT",
+            "data/yara_rules/packers/*",
             "data/tools_info.json",
             "VERSION",
         ],
