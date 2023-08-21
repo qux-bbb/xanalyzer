@@ -48,6 +48,7 @@ sudo apt-get install libmagic1
 ## Usage help
 ```r
 usage: xanalyzer [-h] (-f FILE [FILE ...] | -u URL | --version) [-s] [--deep]
+                 [--minstrlen MINSTRLEN]
 
 Process some files and urls.
 
@@ -59,6 +60,9 @@ optional arguments:
   --version             print version info
   -s, --save            save log and data
   --deep                analyze deeply
+  --minstrlen MINSTRLEN
+                        minimum length of the string to be extracted, default
+                        4, not less than 2
 ```
 
 ## Usage example

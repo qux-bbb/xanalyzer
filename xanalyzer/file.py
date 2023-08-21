@@ -18,7 +18,7 @@ from xanalyzer.utils import log
 class FileAnalyzer:
     packer_yara_rules = None
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, minstrlen=4):
         self.file_path = file_path
         self.file_size = os.path.getsize(self.file_path)
         the_file = open(self.file_path, "rb")
@@ -27,6 +27,11 @@ class FileAnalyzer:
         self.file_type, self.possible_extension_names = self.guess_type_and_ext(
             the_content
         )
+
+        minstrlen_bytes = str(minstrlen).encode()
+        self.str_re = re.compile(rb"[\x20-\x7e]{"+minstrlen_bytes+rb",}")
+        self.wide_str_re = re.compile(rb"(?:[\x20-\x7e]\x00){"+minstrlen_bytes+rb",}")
+
         self.packer_list = []
         self.pe_resource_type_list = []
 
@@ -202,14 +207,14 @@ class FileAnalyzer:
         the_file = open(self.file_path, "rb")
         file_content = the_file.read()
         the_file.close()
-        all_strs = re.findall(rb"[\x20-\x7e]{4,}", file_content)
+        all_strs = re.findall(self.str_re, file_content)
         return all_strs
 
     def get_wide_strs(self):
         the_file = open(self.file_path, "rb")
         file_content = the_file.read()
         the_file.close()
-        all_strs = re.findall(rb"(?:[\x20-\x7e]\x00){4,}", file_content)
+        all_strs = re.findall(self.wide_str_re, file_content)
         return all_strs
 
     def get_tool_recommendations(self):

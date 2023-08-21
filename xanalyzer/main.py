@@ -43,18 +43,24 @@ def main():
     group.add_argument("--version", action="store_true", help="print version info")
     parser.add_argument("-s", "--save", action="store_true", help="save log and data")
     parser.add_argument("--deep", action="store_true", help="analyze deeply")
+    parser.add_argument("--minstrlen", type=int, default=4, help="minimum length of the string to be extracted, default 4, not less than 2")
     args = parser.parse_args()
 
     if args.version:
         print(Config.VERSION)
         return
 
+    deep_flag = args.deep
+    minstrlen = args.minstrlen
+
+    if minstrlen < 2:
+        print("minstrlen must >= 2")
+        return
+
     Config.init(args.save)
     init_log()
 
     log.info("=" * 80)
-
-    deep_flag = args.deep
 
     if args.file:
         for the_path in args.file:
@@ -64,7 +70,7 @@ def main():
             get_all_path(the_path)
         for file_path in file_path_list:
             log.info("processing {}".format(file_path))
-            file_analyzer = FileAnalyzer(file_path)
+            file_analyzer = FileAnalyzer(file_path, minstrlen)
             file_analyzer.run()
             log.info("-" * 80)
     if args.url:
