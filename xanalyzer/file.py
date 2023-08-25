@@ -51,7 +51,10 @@ class FileAnalyzer:
         cls.packer_yara_rules = yara.compile(filepaths=yara_dict)
 
     def packer_yara_match(self):
-        return self.packer_yara_rules.match(str(self.file_path))
+        the_file = open(self.file_path, "rb")
+        the_content = the_file.read()
+        the_file.close()
+        return self.packer_yara_rules.match(data=the_content)
 
     def guess_type_and_ext(self, the_content):
         """
