@@ -122,6 +122,23 @@ class PeAnalyzer:
             return self.pe_file.DIRECTORY_ENTRY_EXPORT.name
         return
 
+    def get_exe_import_api_list(self, lower_flag=False):
+        exe_import_api_list = []
+        directory_entry_import = self.pe_file.DIRECTORY_ENTRY_IMPORT
+        for entry_import in directory_entry_import:
+            dll_name = entry_import.dll.decode()
+            dll_base_name = dll_name
+            if dll_name.lower().endswith(".dll"):
+                dll_base_name = dll_name[:-4]
+            for the_api in entry_import.imports:
+                if hasattr(the_api, "name"):
+                    api_name = the_api.name.decode()
+                    item_name = f"{dll_base_name}.{api_name}"
+                    if lower_flag:
+                        item_name = item_name.lower()
+                    exe_import_api_list.append(item_name)
+        return exe_import_api_list
+
     def get_packer_result(self):
         matches = self.peid_signatures.match(self.pe_file, ep_only=True)
 
@@ -349,6 +366,27 @@ class PeAnalyzer:
                 else:
                     log.warning("    Verify result: {}".format(verify_result))
 
+    def exe_import_api_scan(self):
+        if self.file_analyzer.possible_extension_names != [".exe"]:
+            return
+        exe_import_api_list = self.get_exe_import_api_list(lower_flag=True)
+        api_num = len(exe_import_api_list)
+        if api_num == 0:
+            log.warning("the exe does not have import api")
+        elif api_num == 1:
+            the_api = exe_import_api_list[0]
+            if the_api.startswith("kernel32.loadlibrary"):
+                log.warning(f"the exe only has 1 import api: {the_api}")
+        elif api_num == 2:
+            if "kernel32.getprocaddress" in exe_import_api_list:
+                warning_flag = False
+                for the_api in exe_import_api_list:
+                    if the_api != "kernel32.getprocaddress" and the_api.startswith("kernel32.loadlibrary"):
+                        warning_flag = True
+                        break
+                if warning_flag:
+                    log.warning(f"the exe only has 2 import api: {exe_import_api_list}")
+
     def resource_scan(self):
         """
         检查资源类型
@@ -375,4 +413,5 @@ class PeAnalyzer:
         self.section_name_scan()
         self.dll_name_scan()
         self.packer_scan()
+        self.exe_import_api_scan()
         self.resource_scan()
