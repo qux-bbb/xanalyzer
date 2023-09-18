@@ -131,7 +131,8 @@ class PeAnalyzer:
             if dll_name.lower().endswith(".dll"):
                 dll_base_name = dll_name[:-4]
             for the_api in entry_import.imports:
-                if hasattr(the_api, "name"):
+                # cbb16b01a8dcf3747a597ceb4176939f83083a6293b60aaca00e040970d63379 the_api.name有None的情况
+                if hasattr(the_api, "name") and the_api.name:
                     api_name = the_api.name.decode()
                     item_name = f"{dll_base_name}.{api_name}"
                     if lower_flag:
