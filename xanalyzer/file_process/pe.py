@@ -124,6 +124,8 @@ class PeAnalyzer:
 
     def get_exe_import_api_list(self, lower_flag=False):
         exe_import_api_list = []
+        if not hasattr(self.pe_file, "DIRECTORY_ENTRY_IMPORT"):
+            return []
         directory_entry_import = self.pe_file.DIRECTORY_ENTRY_IMPORT
         for entry_import in directory_entry_import:
             dll_name = entry_import.dll.decode()
