@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  basic_func_test:
 
     runs-on: windows-2019
 
@@ -22,8 +22,9 @@ jobs:
         python-version: "3.10"
     - name: Install dependencies
       run: |
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        if [ -f requirements.my.txt ]; then pip install -r requirements.my.txt; fi
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements.my.txt
     - name: Test with pytest
       run: |
         pytest
