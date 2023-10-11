@@ -97,7 +97,7 @@ python setup.py develop
 pip install -r requirements.txt
 pip install -r requirements.my.txt
 pytest
-python setup.py sdist bdist_wheel
+python -m build
 # 退出虚拟环境: deactivate
 ```
 
