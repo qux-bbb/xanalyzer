@@ -105,8 +105,8 @@ class PeAnalyzer:
         return versioninfo
 
     def get_compile_time(self):
-        compile_time = datetime.fromtimestamp(self.pe_file.FILE_HEADER.TimeDateStamp)
-        time_str = str(compile_time)
+        compile_time = datetime.utcfromtimestamp(self.pe_file.FILE_HEADER.TimeDateStamp)
+        time_str = compile_time.strftime("%Y-%m-%d %H:%M:%S UTC")
         return time_str
 
     def get_pdb_path(self):

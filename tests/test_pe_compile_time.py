@@ -17,7 +17,7 @@ def test_normal_pe_compile_time():
 
     pe_analyzer = PeAnalyzer(file_analyzer)
     compile_time = pe_analyzer.get_compile_time()
-    assert compile_time == "2022-03-27 14:38:47"
+    assert compile_time == "2022-03-27 06:38:47 UTC"
 
 
 def test_weird_pe_compile_time():
@@ -35,4 +35,4 @@ def test_weird_pe_compile_time():
 
     pe_analyzer = PeAnalyzer(file_analyzer)
     compile_time = pe_analyzer.get_compile_time()
-    assert compile_time == "2006-11-06 11:44:05"
+    assert compile_time == "2006-11-06 03:44:05 UTC"
