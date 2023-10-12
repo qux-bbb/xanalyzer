@@ -1,5 +1,7 @@
+import os
 import re
 from datetime import datetime
+from pathlib import Path
 
 import pefile
 import peutils
@@ -288,6 +290,18 @@ class PeAnalyzer:
             log.warning(
                 f"pe weird size: file_size {self.file_analyzer.file_size}({hex(self.file_analyzer.file_size)}), pe_size {pe_size}({hex(pe_size)})"
             )
+            if pe_size < self.file_analyzer.file_size and Config.conf["save_flag"]:
+                the_file = open(self.file_analyzer.file_path, "rb")
+                the_content = the_file.read()
+                the_file.close()
+
+                stripped_file_name = Path(self.file_analyzer.file_path).name + "_stripped"
+                stripped_file_path = os.path.join(
+                    Config.conf["analyze_data_path"], stripped_file_name
+                )
+                with open(stripped_file_path, "wb") as f:
+                    f.write(the_content[:pe_size])
+                log.info(f"{stripped_file_name} saved")
 
     def compile_time_scan(self):
         """
