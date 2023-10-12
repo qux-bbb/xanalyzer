@@ -303,14 +303,24 @@ class FileAnalyzer:
         if all_wide_strs:
             log.info(f"wide str num: {len(all_wide_strs)}")
             if Config.conf["save_flag"]:
-                str_file_name = Path(self.file_path).name + "_wide_strings.txt"
-                str_data_path = os.path.join(
-                    Config.conf["analyze_data_path"], str_file_name
+                wide_str_file_name = Path(self.file_path).name + "_wide_strings.txt"
+                wide_str_data_path = os.path.join(
+                    Config.conf["analyze_data_path"], wide_str_file_name
                 )
-                with open(str_data_path, "wb") as f:
+                with open(wide_str_data_path, "wb") as f:
                     for a_str in all_wide_strs:
                         f.write(a_str + b"\n\x00")
-                log.info(f"{str_file_name} saved")
+                log.info(f"{wide_str_file_name} saved")
+
+                wide_to_normal_str_file_name = Path(self.file_path).name + "_wide_to_normal_strings.txt"
+                wide_to_normal_str_data_path = os.path.join(
+                    Config.conf["analyze_data_path"], wide_to_normal_str_file_name
+                )
+                with open(wide_to_normal_str_data_path, "wb") as f:
+                    for a_str in all_wide_strs:
+                        normal_str = a_str.replace(b"\x00", b"")
+                        f.write(normal_str + b"\n")
+                log.info(f"{wide_to_normal_str_file_name} saved")
 
     def tool_recommendations_scan(self):
         recommended_tool_info_list = self.get_tool_recommendations()
