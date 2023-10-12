@@ -34,7 +34,7 @@ jobs:
         pipx ensurepath
     - name: Pack and test
       run: |
-        python -m build
+        python -m build --no-isolation
         copy .\dist\xanalyzer*.tar.gz .\dist\xanalyzer.latest.tar.gz
         pipx install .\dist\xanalyzer.latest.tar.gz
         xanalyzer --version
