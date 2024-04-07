@@ -78,7 +78,9 @@ class FileAnalyzer:
                     the_file_type = "Microsoft PowerPoint 2007+"
 
         if the_file_type.startswith("Composite Document File V2 Document"):
-            if "WordDocument".encode("utf_16_le") in the_content:
+            if "MSI Installer" in the_file_type:
+                the_ext = [".msi"]
+            elif "WordDocument".encode("utf_16_le") in the_content:
                 if "Name of Creating Application: WPS" in the_file_type:
                     the_ext = [".doc", ".wps"]
                 else:

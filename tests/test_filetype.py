@@ -46,6 +46,8 @@ def test_many_filetypes():
         "Hello32.exe_",
         "Hello32.dll_",
         "Hello32.sys_",
+        # 一些Windows程序安装包
+        "SetupTest.msi_",
         # 安卓
         "app-debug.apk_",
         # pdf
