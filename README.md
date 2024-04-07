@@ -80,6 +80,7 @@ python -m venv venv
 # windws使用虚拟环境: .\venv\Scripts\activate
 # linux使用虚拟环境: source venv/bin/activate
 pip install -r requirements.txt
+pip install -r requirements.my.txt
 python setup.py develop
 # 退出虚拟环境: deactivate
 ```

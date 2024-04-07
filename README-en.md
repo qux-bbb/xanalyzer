@@ -80,6 +80,7 @@ python -m venv venv
 # use venv in windws: .\venv\Scripts\activate
 # use venv in linux: source venv/bin/activate
 pip install -r requirements.txt
+pip install -r requirements.my.txt
 python setup.py develop
 # exit venv: deactivate
 ```
