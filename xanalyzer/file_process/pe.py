@@ -1,6 +1,6 @@
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pefile
@@ -107,7 +107,9 @@ class PeAnalyzer:
         return versioninfo
 
     def get_compile_time(self):
-        compile_time = datetime.utcfromtimestamp(self.pe_file.FILE_HEADER.TimeDateStamp)
+        compile_time = datetime.fromtimestamp(
+            self.pe_file.FILE_HEADER.TimeDateStamp, tz=timezone.utc
+        )
         time_str = compile_time.strftime("%Y-%m-%d %H:%M:%S UTC")
         return time_str
 
