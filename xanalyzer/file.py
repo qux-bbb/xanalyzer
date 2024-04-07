@@ -34,6 +34,7 @@ class FileAnalyzer:
 
         self.packer_list = []
         self.pe_resource_type_list = []
+        self.pe_versioninfo = []
 
         self.init_packer_yara_rules()
 
@@ -255,8 +256,21 @@ class FileAnalyzer:
 
         if self.file_type.startswith(("PE", "MS-DOS executable")):
             recommended_tool_names.append("XPEViewer")
+
+            for item in self.pe_versioninfo:
+                if (
+                    item["name"] == "Comments"
+                    and item["value"] == "This installation was built with Inno Setup."
+                ):
+                    recommended_tool_names.append("Innounp")
+                    break
+
             if "Mono/.Net assembly" in self.file_type:
                 recommended_tool_names.append("dnSpy")
+
+            if "Nullsoft Installer" in self.file_type:
+                recommended_tool_names.append("7z-build-nsis")
+
             for extension in [
                 ".ico",
                 ".png",
@@ -305,6 +319,8 @@ class FileAnalyzer:
 
         if ".xls" in self.possible_extension_names:
             recommended_tool_names.append("oletools")
+        elif ".msi" in self.possible_extension_names:
+            recommended_tool_names.append("lessmsi")
 
         with open(Config.tools_info_path, "r") as f:
             tools_info = json.load(f)

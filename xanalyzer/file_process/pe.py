@@ -325,6 +325,7 @@ class PeAnalyzer:
         """
         versioninfo = self.get_versioninfo()
         if versioninfo:
+            self.file_analyzer.pe_versioninfo = versioninfo
             log.info("versioninfo:")
             for item in versioninfo:
                 log.info('    "{}": "{}"'.format(item["name"], item["value"]))
