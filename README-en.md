@@ -76,7 +76,7 @@ xanalyzer -u "https://www.baidu.com/s?wd=hello"
 ```r
 git clone https://github.com/qux-bbb/xanalyzer
 cd xanalyzer
-virtualenv venv
+python -m venv venv
 # use venv in windws: .\venv\Scripts\activate
 # use venv in linux: source venv/bin/activate
 pip install -r requirements.txt
