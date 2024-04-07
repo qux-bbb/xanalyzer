@@ -36,3 +36,20 @@ def test_wide_str():
 
     file_analyzer = FileAnalyzer(file_path=pe_path, minstrlen=5)
     assert file_analyzer.get_wide_strs() == [b"5\x005\x005\x005\x005\x00"]
+
+
+def test_special_str():
+    pe_path = cur_dir_path / "test_data" / "special_str.txt"
+
+    file_analyzer = FileAnalyzer(file_path=pe_path)
+    assert file_analyzer.get_special_strs() == [b"aGVsbG8=", b"68656c6c6f"]
+
+
+def test_special_wide_str():
+    pe_path = cur_dir_path / "test_data" / "special_wide_str.txt"
+
+    file_analyzer = FileAnalyzer(file_path=pe_path)
+    assert file_analyzer.get_special_wide_strs() == [
+        b"a\x00G\x00V\x00s\x00b\x00G\x008\x00=\x00",
+        b"6\x008\x006\x005\x006\x00c\x006\x00c\x006\x00f\x00",
+    ]

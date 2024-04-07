@@ -44,9 +44,7 @@ class FileAnalyzer:
         yara_filenames = os.listdir(Config.packer_yara_rules_path)
         yara_dict = {}
         for yara_filename in yara_filenames:
-            yara_path = os.path.join(
-                Config.packer_yara_rules_path, yara_filename
-            )
+            yara_path = os.path.join(Config.packer_yara_rules_path, yara_filename)
             yara_dict[yara_filename] = yara_path
         cls.packer_yara_rules = yara.compile(filepaths=yara_dict)
 
@@ -220,6 +218,36 @@ class FileAnalyzer:
         all_strs = re.findall(self.wide_str_re, file_content)
         return all_strs
 
+    def get_special_strs(self):
+        the_file = open(self.file_path, "rb")
+        file_content = the_file.read()
+        the_file.close()
+        tmp_base64_strs = re.findall(rb"[A-Za-z0-9+/]{2,}={0,2}", file_content)
+        possible_base64_strs = []
+        for tmp_base64_str in tmp_base64_strs:
+            # 过滤hex字符串
+            if re.match(rb"(?:[A-Fa-f0-9]{2}){4,}", tmp_base64_str):
+                continue
+            possible_base64_strs.append(tmp_base64_str)
+        hex_strs = re.findall(rb"(?:[A-Fa-f0-9]{2}){4,}", file_content)
+        special_strs = possible_base64_strs + hex_strs
+        return special_strs
+
+    def get_special_wide_strs(self):
+        the_file = open(self.file_path, "rb")
+        file_content = the_file.read()
+        the_file.close()
+        tmp_base64_strs = re.findall(rb"(?:[A-Za-z0-9+/]\x00){2,}(?:=\x00){0,2}", file_content)
+        possible_base64_strs = []
+        for tmp_base64_str in tmp_base64_strs:
+            # 过滤hex字符串
+            if re.match(rb"(?:(?:[A-Fa-f0-9]\x00){2}){4,}", tmp_base64_str):
+                continue
+            possible_base64_strs.append(tmp_base64_str)
+        hex_strs = re.findall(rb"(?:(?:[A-Fa-f0-9]\x00){2}){4,}", file_content)
+        special_wide_strs = possible_base64_strs + hex_strs
+        return special_wide_strs
+
     def get_tool_recommendations(self):
         recommended_tool_names = []
 
@@ -312,7 +340,9 @@ class FileAnalyzer:
                         f.write(a_str + b"\n\x00")
                 log.info(f"{wide_str_file_name} saved")
 
-                wide_to_normal_str_file_name = Path(self.file_path).name + "_wide_to_normal_strings.txt"
+                wide_to_normal_str_file_name = (
+                    Path(self.file_path).name + "_wide_to_normal_strings.txt"
+                )
                 wide_to_normal_str_data_path = os.path.join(
                     Config.conf["analyze_data_path"], wide_to_normal_str_file_name
                 )
@@ -321,6 +351,36 @@ class FileAnalyzer:
                         normal_str = a_str.replace(b"\x00", b"")
                         f.write(normal_str + b"\n")
                 log.info(f"{wide_to_normal_str_file_name} saved")
+
+        special_strs = self.get_special_strs()
+        if special_strs:
+            log.info(f"special strs num: {len(special_strs)}")
+            if Config.conf["save_flag"]:
+                special_str_file_name = (
+                    Path(self.file_path).name + "_special_strings.txt"
+                )
+                str_data_path = os.path.join(
+                    Config.conf["analyze_data_path"], special_str_file_name
+                )
+                with open(str_data_path, "wb") as f:
+                    for a_str in special_strs:
+                        f.write(a_str + b"\n")
+                log.info(f"{special_str_file_name} saved")
+
+        special_wide_strs = self.get_special_wide_strs()
+        if special_wide_strs:
+            log.info(f"special wide str num: {len(special_wide_strs)}")
+            if Config.conf["save_flag"]:
+                special_wide_str_file_name = (
+                    Path(self.file_path).name + "_special_wide_strings.txt"
+                )
+                special_wide_str_data_path = os.path.join(
+                    Config.conf["analyze_data_path"], special_wide_str_file_name
+                )
+                with open(special_wide_str_data_path, "wb") as f:
+                    for a_str in special_wide_strs:
+                        f.write(a_str + b"\n\x00")
+                log.info(f"{special_wide_str_file_name} saved")
 
     def tool_recommendations_scan(self):
         recommended_tool_info_list = self.get_tool_recommendations()
