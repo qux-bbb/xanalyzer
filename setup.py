@@ -20,6 +20,7 @@ setup(
     entry_points={
         "console_scripts": [
             "xanalyzer = xanalyzer.main:main",
+            "xa = xanalyzer.main:main",
         ],
     },
     install_requires=open("requirements.txt", "r").read().split("\n"),

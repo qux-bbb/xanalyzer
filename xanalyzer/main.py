@@ -30,7 +30,7 @@ def get_all_path(the_path):
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="xanalyzer", description="Process some files and urls."
+        prog="xanalyzer", description="Process some files and urls. 'xa' can be used instead of 'xanalyzer'"
     )
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument(

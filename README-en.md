@@ -51,7 +51,7 @@ sudo apt-get install libmagic1
 usage: xanalyzer [-h] (-f FILE [FILE ...] | -u URL | --version) [-s] [--deep]
                  [--minstrlen MINSTRLEN]
 
-Process some files and urls.
+Process some files and urls. 'xa' can be used instead of 'xanalyzer'
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -70,6 +70,7 @@ optional arguments:
 ```r
 xanalyzer -f hello.exe
 xanalyzer -u "https://www.baidu.com/s?wd=hello"
+xa -f hello.exe
 ```
 
 ## Develop
