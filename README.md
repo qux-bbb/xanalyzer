@@ -117,9 +117,11 @@ xanalyzer -f ./xanalyzer-0.2.3.tar.gz
 3. 将dist文件夹下所有文件传到Release页面  
 然后发布即可  
 
-将文件传到pypi(需要账号密码)  
+将文件传到pypi(需要token)  
 ```r
 python -m twine upload --repository pypi dist/*
+# username: "__token__"
+# password: "pypi-"开头的token字符串
 ```
 
 ## 其它
