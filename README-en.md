@@ -3,6 +3,7 @@
 [简体中文](README.md)  
 
 Simply analyze file and url, python3 is required.  
+python3.11.8 tested.  
 
 1. file
     - md5/sha256

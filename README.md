@@ -3,6 +3,7 @@
 [English](README-en.md)  
 
 简单分析文件和url，python3下运行。  
+python3.11.8测试可用。  
 
 1. 文件
     - md5/sha256
