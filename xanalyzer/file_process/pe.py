@@ -305,6 +305,14 @@ class PeAnalyzer:
                     f.write(the_content[:pe_size])
                 log.info(f"{stripped_file_name} saved")
 
+                appended_file_name = Path(self.file_analyzer.file_path).name + "_appended_data"
+                appended_file_path = os.path.join(
+                    Config.conf["analyze_data_path"], appended_file_name
+                )
+                with open(appended_file_path, "wb") as f:
+                    f.write(the_content[pe_size:])
+                log.info(f"{appended_file_name} saved")
+
     def compile_time_scan(self):
         """
         查看编译时间
