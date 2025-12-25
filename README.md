@@ -84,9 +84,8 @@ python -m venv venv
 pip install -r requirements.txt
 pip install -r requirements.my.txt
 python setup.py develop
-# 退出虚拟环境: deactivate
 ```
-这样之后就可以用pycharm或vscode开发调试了  
+这样就可以用pycharm或vscode开发，之后调用main.py调试
 
 ## 打包发布
 该步骤仅本人使用  
@@ -101,7 +100,6 @@ pip install -r requirements.txt
 pip install -r requirements.my.txt
 pytest
 python -m build
-# 退出虚拟环境: deactivate
 ```
 
 重新打开一个命令行，转到dist文件夹下本地安装，检查基本功能，举例：  
