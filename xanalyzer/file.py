@@ -225,7 +225,7 @@ class FileAnalyzer:
         the_file = open(self.file_path, "rb")
         file_content = the_file.read()
         the_file.close()
-        tmp_base64_strs = re.findall(rb"[A-Za-z0-9+/]{6,}={1,2}", file_content)
+        tmp_base64_strs = re.findall(rb"[A-Za-z0-9+/]{14,}={0,2}", file_content)
         possible_base64_strs = []
         for tmp_base64_str in tmp_base64_strs:
             # 过滤hex字符串
@@ -241,7 +241,7 @@ class FileAnalyzer:
         file_content = the_file.read()
         the_file.close()
         tmp_base64_strs = re.findall(
-            rb"(?:[A-Za-z0-9+/]\x00){6,}(?:=\x00){1,2}",
+            rb"(?:[A-Za-z0-9+/]\x00){14,}(?:=\x00){0,2}",
             file_content,
         )
         possible_base64_strs = []
