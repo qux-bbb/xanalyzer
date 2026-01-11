@@ -12,6 +12,7 @@ import yara
 from xanalyzer.config import Config
 from xanalyzer.file_process.elf import ElfAnalyzer
 from xanalyzer.file_process.pe import PeAnalyzer
+from xanalyzer.file_process.jpg import JpgAnalyzer
 from xanalyzer.utils import log
 
 
@@ -432,5 +433,8 @@ class FileAnalyzer:
         elif self.file_type.startswith("ELF"):
             elf_analyzer = ElfAnalyzer(self)
             elf_analyzer.run()
+        elif self.file_type.startswith("JPEG image data"):
+            jpg_analyzer = JpgAnalyzer(self)
+            jpg_analyzer.run()
 
         self.tool_recommendations_scan()
