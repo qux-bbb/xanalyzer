@@ -92,7 +92,7 @@ python setup.py develop
 ## 打包发布
 该步骤仅本人使用  
 
-打包前确保版本号和CHANGELOG.md已更新，清空dist文件夹  
+打包前确保VERSION和CHANGELOG.md已更新，README、README-en已添加新功能说明，dist文件夹已清空
 
 安装依赖、通过测试项、打包：  
 ```r
