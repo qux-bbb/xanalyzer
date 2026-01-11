@@ -24,6 +24,8 @@ python3.11.8 tested.
     - ELF file
         - ELF size
         - packer scan
+    - JPG file
+        - tail check
     - recommended tool
 2. url(website)
     - domain to ip
