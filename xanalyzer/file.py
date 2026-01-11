@@ -230,10 +230,10 @@ class FileAnalyzer:
         possible_base64_strs = []
         for tmp_base64_str in tmp_base64_strs:
             # 过滤hex字符串
-            if re.match(rb"(?:[A-Fa-f0-9]{2}){4,}", tmp_base64_str):
+            if re.match(rb"(?:[A-Fa-f0-9]{2}){5,}", tmp_base64_str):
                 continue
             possible_base64_strs.append(tmp_base64_str)
-        hex_strs = re.findall(rb"(?:[A-Fa-f0-9]{2}){4,}", file_content)
+        hex_strs = re.findall(rb"(?:[A-Fa-f0-9]{2}){5,}", file_content)
         special_strs = possible_base64_strs + hex_strs
         return special_strs
 
@@ -248,10 +248,10 @@ class FileAnalyzer:
         possible_base64_strs = []
         for tmp_base64_str in tmp_base64_strs:
             # 过滤hex字符串
-            if re.match(rb"(?:(?:[A-Fa-f0-9]\x00){2}){4,}", tmp_base64_str):
+            if re.match(rb"(?:(?:[A-Fa-f0-9]\x00){2}){5,}", tmp_base64_str):
                 continue
             possible_base64_strs.append(tmp_base64_str)
-        hex_strs = re.findall(rb"(?:(?:[A-Fa-f0-9]\x00){2}){4,}", file_content)
+        hex_strs = re.findall(rb"(?:(?:[A-Fa-f0-9]\x00){2}){5,}", file_content)
         special_wide_strs = possible_base64_strs + hex_strs
         return special_wide_strs
 
