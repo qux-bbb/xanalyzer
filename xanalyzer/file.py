@@ -66,9 +66,14 @@ class FileAnalyzer:
         the_ext = []
         if the_file_type.startswith("Zip archive data"):
             the_file = io.BytesIO(the_content)
-            the_zip = ZipFile(the_file)
-            zip_namelist = the_zip.namelist()
-            the_zip.close()
+            # try catch for 3ba5350ecef80a058f5e72ee2ee80c69d7718b9d344ff4a661e1ccfbb1d119f9_broken_zip
+            try:
+                the_zip = ZipFile(the_file)
+                zip_namelist = the_zip.namelist()
+                the_zip.close()
+            except:
+                zip_namelist = []
+                log.error(f"guess_type_and_ext ZipFile error: {self.file_path}")
             if "AndroidManifest.xml" in zip_namelist:
                 the_file_type = f"{the_file_type}, APK(Android application package)"
             elif "[Content_Types].xml" in zip_namelist:
